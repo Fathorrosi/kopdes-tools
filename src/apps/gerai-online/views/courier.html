@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Mode Kurir Pengantaran — Kopdes <?= kopdesName ?></title>
+    
+    <!-- ===== FAVICON & APP ICONS ===== -->
+    <link rel="icon" type="image/png" href="<?= logoUrl ?>?v=2" />
+    <link rel="apple-touch-icon" href="<?= logoUrl ?>?v=2" />
+
+    <!-- ===== FONTS ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- ===== FONT AWESOME ICONS ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <style>
+        :root {
+            --c-primary: #15803D;
+            --c-primary-dark: #166534;
+            --c-primary-light: #DCFCE7;
+            --c-accent: #7C3AED;
+            --c-accent-light: #EDE9FE;
+            --c-bg: #F8FAFC;
+            --c-surface: #FFFFFF;
+            --c-surface-2: #F1F5F9;
+            --c-text: #0F172A;
+            --c-text-2: #334155;
+            --c-text-3: #64748B;
+            --c-text-4: #94A3B8;
+            --c-border: #E2E8F0;
+            --c-danger: #DC2626;
+            --c-success: #16A34A;
+            --c-warning: #D97706;
+            --r-sm: 6px;
+            --r-md: 10px;
+            --r-lg: 16px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--c-bg);
+            color: var(--c-text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== TOP NAVBAR ===== */
+        .courier-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--c-border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .header-logo {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #fff;
+            padding: 2px;
+            border: 1px solid var(--c-border);
+        }
+        .header-titles h1 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--c-text);
+            line-height: 1.2;
+        }
+        .header-titles .courier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #fff;
+            background: var(--c-accent);
+            padding: 1.5px 6px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: var(--r-md);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            text-decoration: none;
+            user-select: none;
+        }
+        .btn-primary { background: var(--c-primary); color: #fff; }
+        .btn-primary:hover { background: var(--c-primary-dark); }
+        .btn-accent { background: var(--c-accent); color: #fff; }
+        .btn-accent:hover { background: #6D28D9; }
+        .btn-secondary { background: var(--c-surface-2); color: var(--c-text); border-color: var(--c-border); }
+        .btn-secondary:hover { background: #E2E8F0; }
+        .btn-success { background: var(--c-success); color: #fff; }
+        .btn-danger { background: var(--c-danger); color: #fff; }
+        .btn-sm { font-size: 11.5px; padding: 5px 10px; border-radius: var(--r-sm); }
+        .btn-lg { font-size: 14.5px; padding: 12px 18px; border-radius: var(--r-md); font-weight: 800; }
+        .btn-full { width: 100%; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 14px 16px;
+        }
+
+        /* ===== COURIER IDENTITY BAR ===== */
+        .courier-identity-card {
+            background: linear-gradient(135deg, #1E293B, #0F172A);
+            color: #fff;
+            padding: 14px 16px;
+            border-radius: var(--r-lg);
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .courier-identity-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .courier-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--c-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+        }
+        .courier-name-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; font-weight: 700; }
+        .courier-name-val { font-size: 16px; font-weight: 800; color: #fff; }
+
+        /* ===== STATS BAR ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-md);
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-val { font-size: 18px; font-weight: 900; line-height: 1.1; margin-bottom: 2px; }
+        .stat-lbl { font-size: 10.5px; font-weight: 700; color: var(--c-text-3); text-transform: uppercase; }
+
+        /* ===== TABS ===== */
+        .tab-nav {
+            display: flex;
+            background: var(--c-surface-2);
+            padding: 4px;
+            border-radius: var(--r-md);
+            margin-bottom: 14px;
+            border: 1px solid var(--c-border);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--c-text-3);
+            border-radius: var(--r-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .tab-btn.active {
+            background: var(--c-surface);
+            color: var(--c-text);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ===== DELIVERY ORDER CARD ===== */
+        .delivery-card {
+            background: var(--c-surface);
+            border: 1.5px solid var(--c-border);
+            border-radius: var(--r-lg);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .delivery-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .delivery-card.active-delivery {
+            border-color: #C4B5FD;
+            background: linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 60px);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--c-border);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        .card-id { font-size: 15px; font-weight: 900; color: var(--c-text); }
+        .card-date { font-size: 11px; color: var(--c-text-3); margin-top: 1px; }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .badge-delivering { background: #EDE9FE; color: #6D28D9; border: 1px solid #DDD6FE; }
+        .badge-processing { background: #DBEAFE; color: #1D4ED8; border: 1px solid #BFDBFE; }
+        .badge-completed { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+
+        /* Section details */
+        .info-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .info-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: var(--c-surface-2);
+            color: var(--c-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 11px;
+            margin-top: 1px;
+        }
+        .info-content strong { color: var(--c-text); font-weight: 700; }
+
+        /* Quick Action Toolbar */
+        .quick-toolbar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        /* Prominent COD Amount Box */
+        .cod-amount-box {
+            background: #F0FDF4;
+            border: 1.5px solid #86EFAC;
+            border-radius: var(--r-md);
+            padding: 12px 14px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cod-label { font-size: 11.5px; font-weight: 800; color: #166534; text-transform: uppercase; }
+        .cod-val { font-size: 20px; font-weight: 900; color: #15803D; }
+
+        /* Items Accordion */
+        .items-accordion {
+            background: var(--c-surface-2);
+            border-radius: var(--r-md);
+            border: 1px solid var(--c-border);
+            padding: 8px 12px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+        .items-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            color: var(--c-text-2);
+            cursor: pointer;
+        }
+        .items-list {
+            display: none;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--c-border);
+            flex-direction: column;
+            gap: 4px;
+        }
+        .items-list.open { display: flex; }
+
+        /* Card Action Buttons */
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        /* ===== MODALS ===== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-backdrop.open { display: flex; animation: fadeIn 0.2s ease; }
+        .modal {
+            background: var(--c-surface);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--c-border);
+            padding: 20px;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--c-border);
+        }
+        .modal-title { font-size: 16px; font-weight: 800; color: var(--c-text); display: flex; align-items: center; gap: 8px; }
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: var(--c-text-3);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* Input Controls */
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--c-text-2); margin-bottom: 6px; }
+        .input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--c-border);
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: 13.5px;
+            background: var(--c-surface);
+            color: var(--c-text);
+            outline: none;
+            transition: border-color 0.18s ease;
+        }
+        .input:focus { border-color: var(--c-primary); }
+
+        /* Upload Dropzone */
+        .upload-dropzone {
+            border: 2px dashed #CBD5E1;
+            border-radius: var(--r-md);
+            padding: 18px 12px;
+            text-align: center;
+            background: var(--c-surface-2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .upload-dropzone:hover { border-color: var(--c-primary); background: var(--c-primary-light); }
+
+        /* ===== THERMAL RECEIPT STYLES ===== */
+        .thermal-receipt {
+            font-family: 'Courier New', Courier, monospace;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            padding: 14px;
+            background: #fff;
+            color: #000;
+            font-size: 12px;
+            line-height: 1.35;
+            border: 1px dashed #cbd5e1;
+        }
+        .tr-center { text-align: center; }
+        .tr-title { font-size: 14px; font-weight: bold; }
+        .tr-divider { border: none; border-top: 1px dashed #000; margin: 8px 0; }
+        .tr-divider-double { border: none; border-top: 2px solid #000; margin: 8px 0; }
+        .tr-row { display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 3px; }
+        .tr-item-name { font-weight: bold; }
+        .tr-item-sub { display: flex; justify-content: space-between; font-size: 11px; padding-left: 8px; margin-bottom: 4px; }
+        .tr-total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin: 6px 0; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #thermal-print-area, #thermal-print-area * { visibility: visible; }
+            #thermal-print-area { position: absolute; left: 0; top: 0; width: 100%; max-width: 58mm; padding: 0; margin: 0; }
+            .no-print { display: none !important; }
+        }
+
+        /* ===== TOAST NOTIFICATIONS ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+            width: 90%;
+            max-width: 380px;
+        }
+        .toast {
+            background: #1E293B;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: var(--r-md);
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideUp 0.25s ease;
+        }
+        .toast-success { background: #15803D; }
+        .toast-error { background: #DC2626; }
+        .toast-info { background: #2563EB; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOP HEADER ===== -->
+    <header class="courier-header">
+        <div class="header-brand">
+            <img src="<?= logoUrl ?>" class="header-logo" alt="Logo Kopdes" />
+            <div class="header-titles">
+                <h1>Kopdes <?= kopdesName ?></h1>
+                <span class="courier-badge"><i class="fas fa-motorcycle"></i> Mode Kurir</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="CourierApp.refresh()" title="Muat Ulang Data">
+                <i class="fas fa-sync-alt" id="refresh-icon"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" style="color:var(--c-danger);border-color:#FECACA;background:#FEF2F2;" onclick="CourierApp.logout()" title="Keluar">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ===== COURIER IDENTITY ===== -->
+        <div class="courier-identity-card">
+            <div class="courier-identity-info">
+                <div class="courier-avatar"><i class="fas fa-user"></i></div>
+                <div>
+                    <div class="courier-name-label">Petugas Kurir Pengantar:</div>
+                    <div class="courier-name-val" id="active-courier-name">Kurir Gerai</div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.25);" onclick="CourierApp.editCourierName()">
+                <i class="fas fa-edit"></i> Ganti
+            </button>
+        </div>
+
+        <!-- ===== STATS CARDS ===== -->
+        <div class="stats-grid">
+            <div class="stat-card" style="border-top:3px solid var(--c-accent);">
+                <div class="stat-val" style="color:var(--c-accent);" id="stat-active-count">0</div>
+                <div class="stat-lbl">Tugas Antar</div>
+            </div>
+            <div class="stat-card" style="border-top:3px solid var(--c-primary);">
+                <div class="stat-val" style="color:var(--c-primary);font-size:15px;" id="stat-total-cod">Rp 0</div>
+                <div class="stat-lbl">Tagihan COD</div>
+            </div>
+            <div class="stat-card" style="border-top:3px solid var(--c-success);">
+                <div class="stat-val" style="color:var(--c-success);" id="stat-completed-count">0</div>
+                <div class="stat-lbl">Selesai Hari Ini</div>
+            </div>
+        </div>
+
+        <!-- ===== TABS ===== -->
+        <div class="tab-nav">
+            <button class="tab-btn active" id="tab-btn-active" onclick="CourierApp.switchTab('active')">
+                <i class="fas fa-motorcycle"></i> Pengantaran Aktif (<span id="tab-active-badge">0</span>)
+            </button>
+            <button class="tab-btn" id="tab-btn-completed" onclick="CourierApp.switchTab('completed')">
+                <i class="fas fa-check-circle"></i> Selesai Hari Ini (<span id="tab-completed-badge">0</span>)
+            </button>
+        </div>
+
+        <!-- ===== TAB CONTENT: ACTIVE DELIVERIES ===== -->
+        <div id="tab-active-container">
+            <div id="active-orders-list">
+                <div style="text-align:center;padding:40px 20px;color:var(--c-text-3);">
+                    <i class="fas fa-spinner fa-spin" style="font-size:32px;color:var(--c-accent);margin-bottom:12px;"></i>
+                    <p style="font-size:13.5px;font-weight:600;">Memuat tugas pengantaran...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB CONTENT: COMPLETED DELIVERIES ===== -->
+        <div id="tab-completed-container" style="display:none;">
+            <!-- Summary Setoran Kas COD -->
+            <div style="background:linear-gradient(135deg, #15803D, #166534);color:#fff;padding:16px;border-radius:var(--r-lg);margin-bottom:14px;box-shadow:var(--shadow-sm);">
+                <div style="font-size:11.5px;font-weight:800;text-transform:uppercase;color:#BBF7D0;">
+                    <i class="fas fa-wallet"></i> Total Setoran Kas Tunai COD Hari Ini
+                </div>
+                <div style="font-size:24px;font-weight:900;margin:4px 0;" id="summary-completed-cod">Rp 0</div>
+                <div style="font-size:11.5px;color:#DCFCE7;">
+                    Wajib disetorkan ke Bendahara Koperasi Desa beserta rekapan tanda bukti.
+                </div>
+            </div>
+
+            <div id="completed-orders-list">
+                <div style="text-align:center;padding:40px 20px;color:var(--c-text-3);">
+                    <p>Memuat riwayat pengantaran...</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== MODAL: SELESAIKAN PESANAN & FOTO BUKTI ===== -->
+    <div class="modal-backdrop" id="complete-modal" onclick="if(event.target===this)CourierApp.closeCompleteModal()">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fas fa-camera" style="color:var(--c-success);"></i> Selesaikan Pengantaran</span>
+                <button class="modal-close" onclick="CourierApp.closeCompleteModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div>
+                <!-- Target Order Info -->
+                <div style="background:var(--c-surface-2);border-radius:var(--r-md);padding:12px;margin-bottom:14px;border:1px solid var(--c-border);">
+                    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+                        <strong id="modal-order-id">#KOP-XXXX</strong>
+                        <strong style="color:var(--c-primary);" id="modal-order-total">Rp 0</strong>
+                    </div>
+                    <div style="font-size:12.5px;color:var(--c-text-2);" id="modal-order-cust">Bpk/Ibu —</div>
+                </div>
+
+                <!-- Ambil Foto Bukti -->
+                <div class="form-group">
+                    <label class="form-label">Foto Bukti Penyerahan Barang & Uang Tunai <span style="color:var(--c-danger);">*</span></label>
+                    <div class="upload-dropzone" onclick="document.getElementById('courier-photo-input').click()">
+                        <input type="file" id="courier-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="CourierApp.handlePhotoSelect(this)" />
+                        <div id="courier-photo-empty">
+                            <i class="fas fa-camera" style="font-size:32px;color:var(--c-primary);margin-bottom:8px;"></i>
+                            <div style="font-size:14px;font-weight:700;color:var(--c-text);">Ketuk untuk Buka Kamera HP</div>
+                            <div style="font-size:11.5px;color:var(--c-text-3);">Foto pembeli menerima barang / pembayaran tunai</div>
+                        </div>
+                        <div id="courier-photo-preview-box" style="display:none;position:relative;">
+                            <img id="courier-photo-preview-img" src="" style="width:100%;max-height:220px;object-fit:cover;border-radius:var(--r-md);" />
+                            <button type="button" class="btn btn-secondary btn-sm" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;border:none;" onclick="event.stopPropagation(); document.getElementById('courier-photo-input').click();">
+                                <i class="fas fa-redo"></i> Ganti Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-top:16px;">
+                    <button type="button" class="btn btn-secondary" style="flex:1;" onclick="CourierApp.closeCompleteModal()">Batal</button>
+                    <button type="button" class="btn btn-success btn-lg" style="flex:2;" id="btn-submit-delivery" onclick="CourierApp.submitDelivery()">
+                        <i class="fas fa-check-circle"></i> Selesai & Lunas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: LOGIN / GANTI AKUN KURIR ===== -->
+    <div class="modal-backdrop" id="courier-name-modal" onclick="if(event.target===this)CourierApp.closeNameModal()">
+        <div class="modal" style="max-width:400px;">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fas fa-id-badge" style="color:var(--c-accent);"></i> Akun Kurir Pengantar</span>
+                <button class="modal-close" onclick="CourierApp.closeNameModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <!-- Quick Courier Account Selectors -->
+            <div style="margin-bottom:14px;">
+                <label class="form-label">Pilih Cepat Akun Kurir Terdaftar:</label>
+                <div id="quick-couriers-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+                    <!-- populated from getCouriers -->
+                </div>
+            </div>
+
+            <div style="border-top:1px dashed var(--c-border);padding-top:12px;">
+                <div class="form-group">
+                    <label class="form-label">Nomor HP / Email Akun Kurir:</label>
+                    <input type="text" id="input-courier-cred" class="input" placeholder="081300000001 atau kurir1@kopdes.id" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">PIN Keamanan (Default: 1234):</label>
+                    <input type="password" id="input-courier-pin" class="input" placeholder="4 Digit PIN" maxlength="6" value="1234" />
+                </div>
+                <button type="button" class="btn btn-accent btn-full btn-lg" id="btn-login-courier" onclick="CourierApp.loginCourierAccount()">
+                    <i class="fas fa-sign-in-alt"></i> Masuk Sebagai Kurir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: THERMAL RECEIPT (BLUETOOTH POS) ===== -->
+    <div class="modal-backdrop" id="thermal-modal" onclick="if(event.target===this)CourierApp.closeThermalModal()">
+        <div class="modal" style="max-width:380px;padding:16px;">
+            <div class="modal-header no-print">
+                <span class="modal-title"><i class="fas fa-print" style="color:var(--c-primary);"></i> Struk Kurir (Thermal)</span>
+                <button class="modal-close" onclick="CourierApp.closeThermalModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div id="thermal-print-area" class="thermal-receipt">
+                <!-- Konten dinamis struk thermal -->
+            </div>
+
+            <div class="no-print" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+                <button type="button" class="btn btn-primary btn-full btn-lg" onclick="window.print()">
+                    <i class="fas fa-print"></i> 🖨️ Cetak Struk Sekarang
+                </button>
+                <button type="button" class="btn btn-secondary btn-full" onclick="CourierApp.closeThermalModal()">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LIGHTBOX IMAGE PREVIEW ===== -->
+    <div class="modal-backdrop" id="image-lightbox" onclick="if(event.target===this)CourierApp.closeLightbox()">
+        <div class="modal" style="max-width:440px;padding:12px;background:#000;border:none;">
+            <img id="lightbox-image" src="" style="width:100%;max-height:80vh;object-fit:contain;border-radius:8px;" />
+            <div style="text-align:center;margin-top:10px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="CourierApp.closeLightbox()" style="background:#334155;color:#fff;border:none;">
+                    <i class="fas fa-times"></i> Tutup Preview
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        // ============================================================
+        //  SAFE NAVIGATION (SEAMLESS VERCEL & STANDALONE)
+        // ============================================================
+        var Navigation = (function() {
+            var _scriptUrl = '<?= scriptUrl ?>';
+            var _isEmbedded = '<?= isEmbedded ?>' === 'true';
+
+            function goTo(page) {
+                var targetPage = (page && page !== 'index') ? page : 'index';
+
+                try {
+                    window.parent.postMessage({ type: 'NAVIGATE', page: targetPage }, '*');
+                } catch(e) {}
+                try {
+                    window.top.postMessage({ type: 'NAVIGATE', page: targetPage }, '*');
+                } catch(e) {}
+
+                if (!_isEmbedded) {
+                    var target = (_scriptUrl && _scriptUrl.indexOf('http') === 0) ? (_scriptUrl + (targetPage !== 'index' ? '?page=' + targetPage : '')) : ('?page=' + targetPage);
+                    if (window.top) {
+                        window.top.location.href = target;
+                    } else {
+                        window.location.href = target;
+                    }
+                }
+            }
+
+            return { goTo: goTo };
+        })();
+
+        // ============================================================
+        //  TOAST SYSTEM
+        // ============================================================
+        var Toast = (function() {
+            function show(msg, type) {
+                var c = document.getElementById('toast-container');
+                if (!c) return;
+                var t = document.createElement('div');
+                t.className = 'toast toast-' + (type || 'info');
+                var icon = 'fa-info-circle';
+                if (type === 'success') icon = 'fa-check-circle';
+                if (type === 'error') icon = 'fa-exclamation-circle';
+                if (type === 'warning') icon = 'fa-exclamation-triangle';
+                t.innerHTML = '<i class="fas ' + icon + '"></i> <span>' + escapeHtml(msg) + '</span>';
+                c.appendChild(t);
+                setTimeout(function() {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateY(10px)';
+                    t.style.transition = 'all 0.3s ease';
+                    setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300);
+                }, 3500);
+            }
+            return { show: show };
+        })();
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // ============================================================
+        //  COURIER APP CONTROLLER
+        // ============================================================
+        var CourierApp = (function() {
+            var _activeOrders = [];
+            var _completedOrders = [];
+            var _activeTab = 'active';
+            var _currentCompleteOrderId = null;
+            var _selectedPhotoDataUrl = '';
+
+            var _registeredCouriers = [];
+
+            function init() {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                var savedName = localStorage.getItem('kopdes_courier_name') || 'Kurir Gerai';
+                document.getElementById('active-courier-name').textContent = savedName;
+
+                // 1. Instant optimistic local cache render (0ms load time!)
+                try {
+                    var cachedOrders = JSON.parse(localStorage.getItem('kopdes_courier_orders_cache') || 'null');
+                    if (cachedOrders) {
+                        _applyOrdersData(cachedOrders);
+                    }
+                    var cachedCouriers = JSON.parse(localStorage.getItem('kopdes_courier_list_cache') || 'null');
+                    if (cachedCouriers) {
+                        _registeredCouriers = cachedCouriers;
+                        _renderQuickCouriersList();
+                    }
+                } catch(e) {}
+
+                // 2. Fetch fresh bootstrap data in 1 single fast roundtrip
+                google.script.run
+                    .withSuccessHandler(function(res) {
+                        if (res) {
+                            // Check Auth & RBAC
+                            if (res.auth && res.auth.user) {
+                                if (res.auth.user.role === 'anggota' && !res.auth.user.isAdmin && !res.auth.user.isStaff) {
+                                    Navigation.goTo('index');
+                                    return;
+                                }
+                                if (res.auth.user.role === 'kurir' || res.auth.user.isAdmin || res.auth.user.isStaff) {
+                                    localStorage.setItem('kopdes_courier_name', res.auth.user.name);
+                                    document.getElementById('active-courier-name').textContent = res.auth.user.name;
+                                }
+                            } else if (!uid) {
+                                editCourierName(); // Prompt login if not authenticated
+                            }
+
+                            // Update Couriers
+                            if (res.couriers) {
+                                _registeredCouriers = res.couriers;
+                                try { localStorage.setItem('kopdes_courier_list_cache', JSON.stringify(_registeredCouriers)); } catch(e) {}
+                                _renderQuickCouriersList();
+                            }
+
+                            // Update Orders
+                            if (res.orders) {
+                                _applyOrdersData(res.orders);
+                                try { localStorage.setItem('kopdes_courier_orders_cache', JSON.stringify(res.orders)); } catch(e) {}
+                            }
+                        }
+                    })
+                    .withFailureHandler(function(err) {
+                        Toast.show('Koneksi terganggu: ' + err.message, 'error');
+                        loadOrders();
+                    })
+                    .getCourierBootstrapData(uid, savedName);
+            }
+
+            function _applyOrdersData(ordersData) {
+                _activeOrders = (ordersData && ordersData.active) || [];
+                _completedOrders = (ordersData && ordersData.completedToday) || [];
+
+                document.getElementById('stat-active-count').textContent = _activeOrders.length;
+                document.getElementById('tab-active-badge').textContent = _activeOrders.length;
+
+                var totalCod = _activeOrders.reduce(function(acc, o) { return acc + Number(o.total || 0); }, 0);
+                document.getElementById('stat-total-cod').textContent = 'Rp ' + totalCod.toLocaleString('id-ID');
+
+                document.getElementById('stat-completed-count').textContent = _completedOrders.length;
+                document.getElementById('tab-completed-badge').textContent = _completedOrders.length;
+
+                var totalCompCod = _completedOrders.reduce(function(acc, o) { return acc + Number(o.total || 0); }, 0);
+                document.getElementById('summary-completed-cod').textContent = 'Rp ' + totalCompCod.toLocaleString('id-ID');
+
+                _renderActiveOrders();
+                _renderCompletedOrders();
+            }
+
+            function loadRegisteredCouriers() {
+                google.script.run
+                    .withSuccessHandler(function(list) {
+                        _registeredCouriers = list || [];
+                        try { localStorage.setItem('kopdes_courier_list_cache', JSON.stringify(_registeredCouriers)); } catch(e) {}
+                        _renderQuickCouriersList();
+                    })
+                    .getCouriers();
+            }
+
+            function _renderQuickCouriersList() {
+                var container = document.getElementById('quick-couriers-list');
+                if (!container) return;
+
+                if (!_registeredCouriers || _registeredCouriers.length === 0) {
+                    container.innerHTML = '<div style="font-size:12px;color:var(--c-text-3);">Belum ada kurir terdaftar.</div>';
+                    return;
+                }
+
+                container.innerHTML = _registeredCouriers.map(function(c) {
+                    return '<button type="button" class="btn btn-secondary btn-sm" style="justify-content:flex-start;text-align:left;padding:8px 10px;font-size:12.5px;" onclick="CourierApp.selectQuickCourier(\'' + escapeHtml(c.phone || c.email) + '\')">' +
+                        '<i class="fas fa-user-circle" style="color:var(--c-accent);font-size:16px;"></i>' +
+                        '<div style="flex:1;min-width:0;line-height:1.2;">' +
+                            '<strong>' + escapeHtml(c.name) + '</strong>' +
+                            '<div style="font-size:11px;color:var(--c-text-3);">' + escapeHtml(c.phone || c.email) + '</div>' +
+                        '</div>' +
+                        '<i class="fas fa-chevron-right" style="color:var(--c-text-4);font-size:11px;"></i>' +
+                    '</button>';
+                }).join('');
+            }
+
+            function selectQuickCourier(cred) {
+                document.getElementById('input-courier-cred').value = cred;
+                document.getElementById('input-courier-pin').focus();
+            }
+
+            function getCourierName() {
+                return localStorage.getItem('kopdes_courier_name') || 'Kurir Gerai';
+            }
+
+            function editCourierName() {
+                var savedCred = localStorage.getItem('kopdes_courier_cred') || '';
+                document.getElementById('input-courier-cred').value = savedCred;
+                document.getElementById('courier-name-modal').classList.add('open');
+                _renderQuickCouriersList();
+            }
+
+            function closeNameModal() {
+                document.getElementById('courier-name-modal').classList.remove('open');
+            }
+
+            function loginCourierAccount() {
+                var cred = document.getElementById('input-courier-cred').value.trim();
+                var pin = document.getElementById('input-courier-pin').value.trim();
+
+                if (!cred || !pin) {
+                    Toast.show('Nomor HP / Email dan PIN wajib diisi!', 'warning');
+                    return;
+                }
+
+                var btn = document.getElementById('btn-login-courier');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi akun...';
+
+                google.script.run
+                    .withSuccessHandler(function(res) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk Sebagai Kurir';
+
+                        if (res && res.success && res.user) {
+                            localStorage.setItem('kopdes_user_id', res.user.id);
+                            localStorage.setItem('kopdes_courier_name', res.user.name);
+                            localStorage.setItem('kopdes_courier_cred', cred);
+                            document.getElementById('active-courier-name').textContent = res.user.name;
+                            closeNameModal();
+                            Toast.show('Login berhasil sebagai ' + res.user.name + '!', 'success');
+                            loadOrders();
+                        }
+                    })
+                    .withFailureHandler(function(err) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk Sebagai Kurir';
+                        Toast.show(err.message || 'Login kurir gagal.', 'error');
+                    })
+                    .loginUser({ credential: cred, pin: pin });
+            }
+
+            function refresh() {
+                var icon = document.getElementById('refresh-icon');
+                if (icon) icon.classList.add('fa-spin');
+                loadOrders(function() {
+                    if (icon) icon.classList.remove('fa-spin');
+                    Toast.show('Data pengantaran diperbarui!', 'success');
+                });
+            }
+
+            function loadOrders(callback) {
+                var cName = getCourierName();
+                google.script.run
+                    .withSuccessHandler(function(res) {
+                        _applyOrdersData(res);
+                        try { localStorage.setItem('kopdes_courier_orders_cache', JSON.stringify(res)); } catch(e) {}
+                        if (typeof callback === 'function') callback();
+                    })
+                    .withFailureHandler(function(err) {
+                        Toast.show('Gagal memuat tugas kurir: ' + err.message, 'error');
+                        if (typeof callback === 'function') callback();
+                    })
+                    .getCourierOrders(cName);
+            }
+
+            function switchTab(tab) {
+                _activeTab = tab;
+                if (tab === 'active') {
+                    document.getElementById('tab-btn-active').classList.add('active');
+                    document.getElementById('tab-btn-completed').classList.remove('active');
+                    document.getElementById('tab-active-container').style.display = 'block';
+                    document.getElementById('tab-completed-container').style.display = 'none';
+                } else {
+                    document.getElementById('tab-btn-active').classList.remove('active');
+                    document.getElementById('tab-btn-completed').classList.add('active');
+                    document.getElementById('tab-active-container').style.display = 'none';
+                    document.getElementById('tab-completed-container').style.display = 'block';
+                }
+            }
+
+            function _renderActiveOrders() {
+                var container = document.getElementById('active-orders-list');
+                if (!_activeOrders || _activeOrders.length === 0) {
+                    container.innerHTML =
+                        '<div style="text-align:center;padding:50px 20px;background:var(--c-surface);border-radius:var(--r-lg);border:1px dashed var(--c-border);">' +
+                            '<i class="fas fa-check-circle" style="font-size:42px;color:var(--c-success);margin-bottom:12px;"></i>' +
+                            '<h3 style="font-size:16px;font-weight:800;color:var(--c-text);">Tidak Ada Tugas Antar Aktif</h3>' +
+                            '<p style="font-size:12.5px;color:var(--c-text-3);margin-top:4px;">Semua pesanan telah selesai diantar. Kerja bagus!</p>' +
+                        '</div>';
+                    return;
+                }
+
+                container.innerHTML = _activeOrders.map(function(o, idx) {
+                    var dateStr = o.createdAt ? new Date(o.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Hari Ini';
+                    var statusBadge = o.status === 'delivering' ?
+                        '<span class="badge badge-delivering"><i class="fas fa-truck"></i> Sedang Diantar</span>' :
+                        '<span class="badge badge-processing"><i class="fas fa-box"></i> Siap Diantar</span>';
+
+                    // Parse items
+                    var items = [];
+                    if (Array.isArray(o.items)) items = o.items;
+                    else if (typeof o.items === 'string') {
+                        try { items = JSON.parse(o.items); } catch(e) { items = []; }
+                    }
+
+                    var itemsHtml = items.map(function(i) {
+                        var isUnavail = Boolean(i.isUnavailable);
+                        var sub = (Number(i.price || 0) * Number(i.qty || 1));
+                        if (!isUnavail) {
+                            return '<div style="display:flex;justify-content:space-between;color:var(--c-text);">' +
+                                '<span>• ' + escapeHtml(i.name || i.productName) + ' (' + (i.qty || 1) + 'x)</span>' +
+                                '<strong>Rp ' + sub.toLocaleString('id-ID') + '</strong>' +
+                            '</div>';
+                        } else {
+                            return '<div style="display:flex;justify-content:space-between;color:#DC2626;">' +
+                                '<span><s>• ' + escapeHtml(i.name || i.productName) + ' (' + (i.qty || 1) + 'x)</s> [KOSONG]</span>' +
+                                '<span><s>Rp ' + sub.toLocaleString('id-ID') + '</s> Rp 0</span>' +
+                            '</div>';
+                        }
+                    }).join('');
+
+                    // Phone & WA
+                    var rawPhone = String(o.customerPhone || '');
+                    var cleanPhone = rawPhone.replace(/\D/g, '');
+                    if (cleanPhone.indexOf('0') === 0) cleanPhone = '62' + cleanPhone.substring(1);
+                    var waMsg = encodeURIComponent('Halo Bpk/Ibu ' + (o.customerName || '') + ', saya kurir Gerai Kopdes sedang dalam perjalanan mengantarkan pesanan Anda #' + String(o.id).substr(0,8).toUpperCase() + '.');
+                    var mapsQuery = encodeURIComponent(o.customerAddress || 'Desa');
+
+                    return '<div class="delivery-card active-delivery">' +
+                        '<div class="card-header">' +
+                            '<div>' +
+                                '<div class="card-id">#' + escapeHtml(String(o.id).substr(0,8).toUpperCase()) + '</div>' +
+                                '<div class="card-date"><i class="far fa-clock"></i> Masuk: ' + dateStr + '</div>' +
+                            '</div>' +
+                            statusBadge +
+                        '</div>' +
+
+                        '<!-- Informasi Penerima -->' +
+                        '<div class="info-row">' +
+                            '<div class="info-icon"><i class="fas fa-user"></i></div>' +
+                            '<div class="info-content"><strong>' + escapeHtml(o.customerName || '—') + '</strong></div>' +
+                        '</div>' +
+                        '<div class="info-row">' +
+                            '<div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>' +
+                            '<div class="info-content">' +
+                                '<div style="font-weight:700;color:var(--c-text);line-height:1.35;">' + escapeHtml(o.customerAddress || '—') + '</div>' +
+                                (o.notes ? ('<div style="font-size:11.5px;color:#92400E;background:#FEF3C7;padding:3px 6px;border-radius:4px;margin-top:4px;"><strong>Catatan:</strong> ' + escapeHtml(o.notes) + '</div>') : '') +
+                            '</div>' +
+                        '</div>' +
+
+                        '<!-- Quick Toolbar Navigasi & WA -->' +
+                        '<div class="quick-toolbar">' +
+                            '<a href="https://www.google.com/maps/search/?api=1&query=' + mapsQuery + '" target="_blank" class="btn btn-secondary btn-sm" style="color:#2563EB;">' +
+                                '<i class="fas fa-map-marked-alt"></i> Buka Maps' +
+                            '</a>' +
+                            (cleanPhone ? ('<a href="https://wa.me/' + cleanPhone + '?text=' + waMsg + '" target="_blank" class="btn btn-secondary btn-sm" style="color:#16A34A;">' +
+                                '<i class="fab fa-whatsapp"></i> Chat WhatsApp' +
+                            '</a>') : '') +
+                        '</div>' +
+
+                        '<!-- Rincian Item Accordion -->' +
+                        '<div class="items-accordion">' +
+                            '<div class="items-toggle" onclick="CourierApp.toggleItems(' + idx + ')">' +
+                                '<span><i class="fas fa-shopping-basket"></i> ' + items.length + ' Item Barang Belanja</span>' +
+                                '<i class="fas fa-chevron-down" id="accordion-icon-' + idx + '"></i>' +
+                            '</div>' +
+                            '<div class="items-list" id="accordion-list-' + idx + '">' +
+                                itemsHtml +
+                            '</div>' +
+                        '</div>' +
+
+                        '<!-- Nominal Tagihan COD -->' +
+                        '<div class="cod-amount-box">' +
+                            '<div>' +
+                                '<div class="cod-label">💵 Tagih Tunai (COD):</div>' +
+                                '<div style="font-size:11px;color:#166534;">Metode: Bayar di Tempat</div>' +
+                            '</div>' +
+                            '<div class="cod-val">Rp ' + Number(o.total || 0).toLocaleString('id-ID') + '</div>' +
+                        '</div>' +
+
+                        '<!-- Tombol Aksi Kurir -->' +
+                        '<div class="card-actions">' +
+                            '<button type="button" class="btn btn-secondary" style="flex:1;" onclick="CourierApp.openThermalReceipt(\'' + escapeHtml(o.id) + '\')">' +
+                                '<i class="fas fa-print"></i> Struk' +
+                            '</button>' +
+                            '<button type="button" class="btn btn-success btn-lg" style="flex:2;" onclick="CourierApp.openCompleteModal(\'' + escapeHtml(o.id) + '\')">' +
+                                '<i class="fas fa-camera"></i> Foto & Selesai' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
+            }
+
+            function _renderCompletedOrders() {
+                var container = document.getElementById('completed-orders-list');
+                if (!_completedOrders || _completedOrders.length === 0) {
+                    container.innerHTML =
+                        '<div style="text-align:center;padding:40px 20px;color:var(--c-text-3);">' +
+                            '<p>Belum ada pengantaran yang diselesaikan hari ini.</p>' +
+                        '</div>';
+                    return;
+                }
+
+                container.innerHTML = _completedOrders.map(function(o) {
+                    var timeStr = o.completedAt ? new Date(o.completedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '—';
+                    var proofThumb = o.deliveryProofUrl ?
+                        ('<img src="' + escapeHtml(o.deliveryProofUrl) + '" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1.5px solid #86EFAC;cursor:pointer;" onclick="CourierApp.openLightbox(\'' + escapeHtml(o.deliveryProofUrl) + '\')" title="Klik untuk lihat bukti" />') :
+                        '<div style="width:48px;height:48px;border-radius:6px;background:var(--c-surface-2);display:flex;align-items:center;justify-content:center;color:var(--c-text-4);font-size:11px;">No Foto</div>';
+
+                    return '<div class="delivery-card" style="padding:12px 14px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+                            '<div>' +
+                                '<strong style="font-size:14px;color:var(--c-text);">#' + escapeHtml(String(o.id).substr(0,8).toUpperCase()) + '</strong>' +
+                                '<span class="badge badge-completed" style="margin-left:6px;"><i class="fas fa-check-circle"></i> Lunas</span>' +
+                            '</div>' +
+                            '<span style="font-size:11px;color:var(--c-text-3);"><i class="far fa-clock"></i> ' + timeStr + '</span>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:12px;align-items:center;">' +
+                            proofThumb +
+                            '<div style="flex:1;min-width:0;font-size:12.5px;">' +
+                                '<strong style="color:var(--c-text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(o.customerName || '—') + '</strong>' +
+                                '<div style="color:var(--c-text-3);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(o.customerAddress || '—') + '</div>' +
+                                '<strong style="color:var(--c-primary);font-size:13.5px;">Rp ' + Number(o.total || 0).toLocaleString('id-ID') + '</strong>' +
+                            '</div>' +
+                            '<button type="button" class="btn btn-secondary btn-sm" onclick="CourierApp.openThermalReceipt(\'' + escapeHtml(o.id) + '\')" title="Cetak Struk Lagi">' +
+                                '<i class="fas fa-print"></i>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
+            }
+
+            function toggleItems(idx) {
+                var list = document.getElementById('accordion-list-' + idx);
+                var icon = document.getElementById('accordion-icon-' + idx);
+                if (list) {
+                    list.classList.toggle('open');
+                    if (icon) {
+                        icon.classList.toggle('fa-chevron-down');
+                        icon.classList.toggle('fa-chevron-up');
+                    }
+                }
+            }
+
+            // ===== COMPLETE DELIVERY FLOW =====
+            function openCompleteModal(orderId) {
+                _currentCompleteOrderId = orderId;
+                _selectedPhotoDataUrl = '';
+                var order = _activeOrders.find(function(o) { return String(o.id) === String(orderId); });
+                if (!order) return;
+
+                document.getElementById('modal-order-id').textContent = '#' + String(order.id).substr(0,8).toUpperCase();
+                document.getElementById('modal-order-total').textContent = 'Rp ' + Number(order.total || 0).toLocaleString('id-ID');
+                document.getElementById('modal-order-cust').textContent = (order.customerName || 'Bpk/Ibu') + ' — ' + (order.customerAddress || '');
+
+                // Reset photo box
+                document.getElementById('courier-photo-empty').style.display = 'block';
+                document.getElementById('courier-photo-preview-box').style.display = 'none';
+                document.getElementById('courier-photo-preview-img').src = '';
+                document.getElementById('courier-photo-input').value = '';
+
+                document.getElementById('complete-modal').classList.add('open');
+            }
+
+            function closeCompleteModal() {
+                document.getElementById('complete-modal').classList.remove('open');
+                _currentCompleteOrderId = null;
+                _selectedPhotoDataUrl = '';
+            }
+
+            function handlePhotoSelect(input) {
+                var file = input.files[0];
+                if (!file) return;
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var rawData = e.target.result;
+                    _compressPhoto(rawData, 640, 640, 0.85, function(compressed) {
+                        _selectedPhotoDataUrl = compressed || rawData;
+                        document.getElementById('courier-photo-preview-img').src = _selectedPhotoDataUrl;
+                        document.getElementById('courier-photo-empty').style.display = 'none';
+                        document.getElementById('courier-photo-preview-box').style.display = 'block';
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function _compressPhoto(dataUrl, maxW, maxH, quality, cb) {
+                var img = new Image();
+                img.onload = function() {
+                    var w = img.width, h = img.height;
+                    if (w > h) {
+                        if (w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+                    } else {
+                        if (h > maxH) { w = Math.round((w * maxH) / h); h = maxH; }
+                    }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    cb(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = function() { cb(dataUrl); };
+                img.src = dataUrl;
+            }
+
+            function submitDelivery() {
+                if (!_currentCompleteOrderId) return;
+
+                if (!_selectedPhotoDataUrl) {
+                    Toast.show('Harap ambil foto bukti serah terima & uang tunai!', 'warning');
+                    return;
+                }
+
+                var courierName = getCourierName();
+
+                var btn = document.getElementById('btn-submit-delivery');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+                Toast.show('Mengunggah bukti & menyelesaikan pesanan...', 'info');
+
+                google.script.run
+                    .withSuccessHandler(function() {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check-circle"></i> Selesai & Lunas';
+                        Toast.show('Pengantaran berhasil diselesaikan & lunas!', 'success');
+                        closeCompleteModal();
+                        loadOrders();
+                    })
+                    .withFailureHandler(function(err) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check-circle"></i> Selesai & Lunas';
+                        Toast.show('Gagal menyelesaikan: ' + err.message, 'error');
+                    })
+                    .completeCourierDelivery({
+                        orderId: _currentCompleteOrderId,
+                        courierName: courierName,
+                        photoDataUrl: _selectedPhotoDataUrl
+                    });
+            }
+
+            // ===== THERMAL RECEIPT =====
+            function openThermalReceipt(orderId) {
+                var order = _activeOrders.find(function(o) { return String(o.id) === String(orderId); }) ||
+                             _completedOrders.find(function(o) { return String(o.id) === String(orderId); });
+                if (!order) return;
+
+                var area = document.getElementById('thermal-print-area');
+                if (!area) return;
+
+                var kopdesName = '<?= kopdesName ?>' || 'Samatan';
+                var villageName = '<?= villageName ?>' || 'Desa';
+                var villageAddress = '<?= villageAddress ?>' || 'Kantor Koperasi';
+                var villageContact = '<?= villageContact ?>' || '';
+                var dateStr = order.createdAt ? new Date(order.createdAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+                var items = [];
+                if (Array.isArray(order.items)) items = order.items;
+                else if (typeof order.items === 'string') {
+                    try { items = JSON.parse(order.items); } catch(e) { items = []; }
+                }
+
+                var itemsHtml = '';
+                items.forEach(function(i, idx) {
+                    var name = i.name || i.productName || 'Produk';
+                    var qty = Number(i.qty) || 1;
+                    var price = Number(i.price) || 0;
+                    var sub = price * qty;
+                    var isUnavail = Boolean(i.isUnavailable);
+
+                    if (!isUnavail) {
+                        itemsHtml +=
+                            '<div style="margin-bottom:4px;">' +
+                                '<div class="tr-item-name">' + (idx + 1) + '. ' + escapeHtml(name) + ' (' + qty + 'x)</div>' +
+                                '<div class="tr-item-sub"><span>' + qty + ' × Rp ' + price.toLocaleString('id-ID') + '</span><span>Rp ' + sub.toLocaleString('id-ID') + '</span></div>' +
+                            '</div>';
+                    } else {
+                        itemsHtml +=
+                            '<div style="margin-bottom:4px;color:#dc2626;">' +
+                                '<div class="tr-item-name"><s>' + (idx + 1) + '. ' + escapeHtml(name) + ' (' + qty + 'x)</s> [KOSONG]</div>' +
+                                '<div class="tr-item-sub"><span><s>Rp ' + sub.toLocaleString('id-ID') + '</s></span><span>Rp 0</span></div>' +
+                            '</div>';
+                    }
+                });
+
+                var courierName = order.courierName || getCourierName();
+
+                area.innerHTML =
+                    '<div class="tr-center">' +
+                        '<div class="tr-title">GERAI KOPDES ' + escapeHtml(kopdesName.toUpperCase()) + '</div>' +
+                        '<div style="font-size:10.5px;">' + escapeHtml(villageName) + '</div>' +
+                        '<div style="font-size:9.5px;color:#475569;">' + escapeHtml(villageAddress) + '</div>' +
+                        (villageContact ? '<div style="font-size:9.5px;">WA: ' + escapeHtml(villageContact) + '</div>' : '') +
+                    '</div>' +
+                    '<hr class="tr-divider">' +
+                    '<div class="tr-row"><span>No. Order:</span><strong>#' + escapeHtml(String(order.id).substr(0,8).toUpperCase()) + '</strong></div>' +
+                    '<div class="tr-row"><span>Waktu:</span><span>' + dateStr + '</span></div>' +
+                    '<div class="tr-row"><span>Kurir:</span><span>' + escapeHtml(courierName) + '</span></div>' +
+                    '<div class="tr-row"><span>Penerima:</span><strong>' + escapeHtml(order.customerName || '—') + '</strong></div>' +
+                    '<div class="tr-row"><span>Alamat:</span><span style="text-align:right;max-width:160px;">' + escapeHtml(order.customerAddress || '—') + '</span></div>' +
+                    '<hr class="tr-divider">' +
+                    '<div style="font-weight:bold;font-size:11px;margin-bottom:3px;">RINCIAN BARANG:</div>' +
+                    itemsHtml +
+                    '<hr class="tr-divider-double">' +
+                    '<div class="tr-total-row"><span>TOTAL TUNAI:</span><span>Rp ' + Number(order.total || 0).toLocaleString('id-ID') + '</span></div>' +
+                    '<div class="tr-row"><span>Metode Bayar:</span><strong>TUNAI (COD)</strong></div>' +
+                    '<div class="tr-row"><span>Status:</span><strong>' + (order.status === 'completed' ? 'LUNAS / DITERIMA' : 'SEDANG DIANTAR') + '</strong></div>' +
+                    '<hr class="tr-divider-double">' +
+                    '<div class="tr-center" style="font-size:10px;margin-top:6px;">' +
+                        'Terima Kasih Telah Berbelanja!<br>' +
+                        '<em>Koperasi Desa Merah Putih</em>' +
+                    '</div>';
+
+                document.getElementById('thermal-modal').classList.add('open');
+            }
+
+            function closeThermalModal() {
+                document.getElementById('thermal-modal').classList.remove('open');
+            }
+
+            function openLightbox(url) {
+                document.getElementById('lightbox-image').src = url;
+                document.getElementById('image-lightbox').classList.add('open');
+            }
+
+            function closeLightbox() {
+                var el = document.getElementById('image-lightbox');
+                if (el) el.classList.remove('open');
+            }
+
+            function logout() {
+                localStorage.removeItem('kopdes_user_id');
+                localStorage.removeItem('kopdes_courier_name');
+                localStorage.removeItem('kopdes_courier_cred');
+                Toast.show('Anda telah keluar dari akun kurir.', 'info');
+                document.getElementById('active-courier-name').textContent = 'Belum Login';
+                _activeOrders = [];
+                _completedOrders = [];
+                _renderActiveOrders();
+                _renderCompletedOrders();
+                setTimeout(function() {
+                    editCourierName();
+                }, 400);
+            }
+
+            return {
+                init: init,
+                refresh: refresh,
+                logout: logout,
+                editCourierName: editCourierName,
+                closeNameModal: closeNameModal,
+                selectQuickCourier: selectQuickCourier,
+                loginCourierAccount: loginCourierAccount,
+                switchTab: switchTab,
+                toggleItems: toggleItems,
+                openCompleteModal: openCompleteModal,
+                closeCompleteModal: closeCompleteModal,
+                handlePhotoSelect: handlePhotoSelect,
+                submitDelivery: submitDelivery,
+                openThermalReceipt: openThermalReceipt,
+                closeThermalModal: closeThermalModal,
+                openLightbox: openLightbox,
+                closeLightbox: closeLightbox
+            };
+        })();
+
+        document.addEventListener('DOMContentLoaded', CourierApp.init);
+    </script>
+</body>
+</html>
