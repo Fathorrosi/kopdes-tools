@@ -1,125 +1,125 @@
 # 🛒 Kopdes Gerai Online — Panduan Penggunaan & Dokumentasi Sistem
 
-**Kopdes Gerai Online** adalah sistem aplikasi belanja digital (*Micro-SaaS*) berbasis cloud terpadu untuk Koperasi Desa (Kopdes), yang mengintegrasikan Storefront Pembeli, Panel Pengurus Koperasi, dan Portal Pengantaran Khusus Kurir dalam **1 aplikasi terpadu**.
+**Kopdes Gerai Online** adalah sistem aplikasi belanja digital (*Micro-SaaS*) berbasis cloud terpadu untuk Koperasi Desa (Kopdes), mengintegrasikan Storefront Pembeli, Panel Pengurus, dan Portal Kurir dalam **1 aplikasi terpadu**.
 
 * 🌐 **Aplikasi Web & PWA Master:** [https://kopdes-samatan.vercel.app](https://kopdes-samatan.vercel.app)
-* ⚡ **Core Library ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `119`)
+* ⚡ **Core Library Script ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `131`)
 * 📁 **Penyimpanan Media:** Google Drive (*Folder: Gerai Kopdes Assets*)
-* 🏢 **Arsitektur Distribusi:** Managed SaaS Library Mode (Anti-Bypass & Anti-Jual Ulang)
+* 🏢 **Arsitektur:** Managed SaaS Library — Anti-Bypass & Anti-Jual Ulang
 
 ---
 
-## 🔑 Kredensial Akun Pengguna (PIN Default: `1234`)
+## 📚 Dokumentasi Lengkap
 
-| Role / Jabatan | Nomor HP / Username | Email | Nama Akun | Hak Akses Utama |
-| :--- | :--- | :--- | :--- | :--- |
-| 👑 **Super Admin** | `081100000001` / `admin` | `admin@kopdes.id` | Ketua Koperasi | Akses penuh Toko, Admin Panel, Profil Desa, & Sistem |
-| 👔 **Pengurus 1** | `081100000002` | `budi.pengurus@kopdes.id` | Budi Santoso | Kelola Produk, Stok, Validasi Pesanan, & Penugasan Kurir |
-| 👔 **Pengurus 2** | `081100000003` | `siti.pengurus@kopdes.id` | Siti Aminah | Kas Koperasi & Validasi Pesanan |
-| 🛵 **Kurir 1** | `081300000001` / `kurir` | `kurir1@kopdes.id` | Kurir Budi | Tugas Antar, Foto Bukti Serah Terima, & Struk Thermal POS |
-| 🛵 **Kurir 2** | `081300000002` | `kurir2@kopdes.id` | Kurir Ahmad Fauzi | Tugas Antar, Foto Bukti Serah Terima, & Struk Thermal POS |
-| 👥 **Anggota (10 Warga)**| `081200000001` s/d `081200000010` | `ahmad.fauzi@...` | Ahmad Fauzi, Dewi, dll. | Belanja di Toko, Riwayat & Pelacakan Pesanan |
+| Dokumen | Deskripsi | Ditujukan Untuk |
+| :--- | :--- | :--- |
+| 📄 [README.md](./README.md) | Panduan umum, kredensial, dan ringkasan sistem | Semua pihak |
+| 🏗️ [ARCHITECTURE.md](./ARCHITECTURE.md) | Spesifikasi teknis, skema database, RBAC, dan arsitektur sistem | Developer / Vendor |
+| 📱 [docs/CLIENT_SETUP.md](./docs/CLIENT_SETUP.md) | **Panduan setup awal untuk Koperasi Desa klien baru (10-15 menit)** | Koperasi Desa Klien |
+| 🔐 [docs/LICENSE_MANAGEMENT.md](./docs/LICENSE_MANAGEMENT.md) | Panduan manajemen lisensi, aktivasi & nonaktivasi klien | Vendor/Developer |
 
 ---
 
-## 🏢 Panduan Pemasangan Klien Baru (Managed SaaS Library Mode)
+## 🔑 Kredensial Akun Demo (PIN Default: `1234`)
 
-Dengan arsitektur **Managed SaaS Library**, Koperasi Desa klien mendapatkan aplikasi yang berjalan di Google Drive mereka sendiri, namun **source code logika bisnis dan UI Anda tetap 100% aman dan tidak bisa dicuri/dijual lagi**.
-
-### Langkah 1: Klien Menyiapkan Google Sheet
-1. Buka Google Drive Koperasi Desa ➔ Buat **Google Spreadsheet Baru** (Beri nama misal: `Database Kopdes Lenteng`).
-2. Buka menu **Ekstensi (Extensions)** ➔ **Apps Script**.
-
-### Langkah 2: Tambahkan Library Core Engine
-1. Di bilah menu kiri Apps Script, klik tanda tambah (**+**) di sebelah **Libraries (Pustaka)**.
-2. Masukkan **Script ID Core Engine**:
-   ```text
-   1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y
-   ```
-3. Klik **Look up (Cari)**.
-4. Pilih versi terbaru (**`119`**), pastikan Identifier tertulis: **`KopdesEngine`**.
-5. Klik **Add (Tambahkan)**.
-
-### Langkah 3: Salin Kode Client Shell
-1. Buka file `Code.gs` di Apps Script Klien.
-2. Hapus kodenya dan ganti dengan isi dari file **[`client-template/Code.js`](file:///Users/thorsi/Documents/work/kopdes-tools/client-template/Code.js)**.
-3. Klik **Save (Simpan 💾)**.
-
-### Langkah 4: Inisialisasi Database Klien
-1. Pada dropdown toolbar fungsi di atas, pilih fungsi **`setupApp`** ➔ Klik **▶️ Run**.
-   * *Google Sheet klien otomatis terbuat tabel `products`, `orders`, dan `users`.*
-2. Pilih fungsi **`seedData`** ➔ Klik **▶️ Run**.
-   * *Otomatis mengisi 25+ produk sembako dan akun demo ke spreadsheet klien.*
-
-### Langkah 5: Deploy Web App Klien
-1. Klik tombol **Deploy** di kanan atas ➔ **New deployment**.
-2. Pilih **Web app**, set *Execute as: Me*, *Who has access: Anyone*.
-3. Klik **Deploy** ➔ Salin **Web app URL** yang dihasilkan.
-4. Toko Online Koperasi Desa sudah langsung aktif dan siap digunakan!
+| Role | Nomor HP / Username | Email | Hak Akses |
+| :--- | :--- | :--- | :--- |
+| 👑 **Super Admin** | `081100000001` / `admin` | `admin@kopdes.id` | Akses penuh semua fitur |
+| 👔 **Pengurus 1** | `081100000002` | `budi.pengurus@kopdes.id` | Kelola produk, stok & kurir |
+| 👔 **Pengurus 2** | `081100000003` | `siti.pengurus@kopdes.id` | Validasi pesanan & kas |
+| 🛵 **Kurir 1** | `081300000001` / `kurir` | `kurir1@kopdes.id` | Mode pengantaran |
+| 🛵 **Kurir 2** | `081300000002` | `kurir2@kopdes.id` | Mode pengantaran |
+| 👥 **Anggota** | `081200000001` s/d `081200000010` | `ahmad.fauzi@...` | Belanja & lacak pesanan |
 
 ---
 
-## 📱 Panduan Pemasangan Aplikasi di HP (PWA APK / Add to Home Screen)
+## 🚀 Quick Start — Klien Baru
 
-Aplikasi dapat dipasang di layar utama smartphone layaknya aplikasi Android/iOS asli:
+> Untuk panduan lengkap, baca **[docs/CLIENT_SETUP.md](./docs/CLIENT_SETUP.md)**
 
-1. Buka tautan web app di browser smartphone (Google Chrome untuk Android, Safari untuk iPhone).
-2. **Android (Chrome):**
-   * Saat pertama kali membuka, akan muncul banner **"Pasang Aplikasi Kopdes"** di bagian bawah layar. Klik **`[Install]`**.
-   * Atau ketuk menu titik tiga (⋮) di pojok kanan atas ➔ pilih **"Instal Aplikasi"** / **"Tambahkan ke Layar Utama"**.
-3. **iPhone (Safari):**
-   * Ketuk tombol **Bagikan (Share ⎋)** di baris bawah Safari ➔ gulir ke bawah dan pilih **"Tambahkan ke Layar Utama" (Add to Home Screen)**.
-4. Ikon **Kopdes Online** akan muncul di layar utama HP dan dapat dibuka secara *fullscreen* tanpa *browser bar*.
+1. Buat Google Spreadsheet baru ➔ Buka **Ekstensi ➔ Apps Script**
+2. Tambahkan Library `KopdesEngine` *(Script ID di atas)*
+3. Salin kode dari [`client-template/Code.js`](./client-template/Code.js) ke `Code.gs`
+4. Jalankan **`setupApp`** ➔ lalu **`seedData`**
+5. Klik **Deploy ➔ New deployment ➔ Web app** ➔ Toko langsung live! 🎉
 
 ---
 
-## 🛵 Panduan Operasional Kurir Pengantaran
+## 🏢 Managed SaaS Library Architecture
 
-1. **Masuk ke Mode Kurir:**
-   * Buka aplikasi, masuk/login menggunakan nomor HP Kurir (misal: `081300000001` / PIN `1234`).
-   * Sistem akan **langsung otomatis mengarahkan ke Mode Kurir** (`/courier`).
-2. **Menjalankan Pengantaran:**
-   * Pada tab **Pengantaran Aktif**, periksa daftar pesanan yang siap dikirim.
-   * Ketuk **`[🗺️ Buka Maps]`** untuk membuka panduan rute GPS langsung ke rumah pembeli.
-   * Ketuk **`[💬 WhatsApp]`** untuk menyapa pembeli bahwa pesanan sedang dalam perjalanan.
-3. **Penyelesaian & Foto Bukti Serah Terima:**
-   * Saat barang dan uang tunai COD diterima, ketuk **`[📸 Foto & Selesai]`**.
-   * Kamera HP akan aktif mengambil foto bukti serah terima (otomatis dikompresi agar hemat kuota).
-   * Ketuk **`[Selesai & Lunas]`** ➔ Pesanan otomatis berstatus lunas dan tercatat atas nama kurir yang bertugas.
-4. **Cetak Struk Thermal Bluetooth (Opsional):**
-   * Ketuk **`[🖨️ Struk]`** untuk mencetak struk thermal 58mm ke printer Bluetooth mini.
-5. **Setoran Kas COD di Sore Hari:**
-   * Buka tab **Selesai Hari Ini** untuk melihat total uang tunai COD yang wajib disetorkan ke Bendahara Koperasi.
+Seluruh logika bisnis, database engine, dan tampilan UI disimpan aman sebagai **GAS Library** di akun Developer. Koperasi Desa klien hanya memiliki file jembatan tipis 1 file (`Code.gs`) yang terhubung ke library tersebut.
+
+**Keunggulan:**
+- 🔒 **Source code terlindungi** — klien tidak bisa membaca atau menyalin kode
+- 🛡️ **Anti-jual ulang** — kode tidak bisa diduplikasi dan dijual ke pihak lain
+- 🗄️ **Data tersimpan aman** di Google Drive milik masing-masing Koperasi Desa
+- ⚡ **Update fitur instan** — vendor update library, semua klien otomatis mendapat fitur baru (setelah update versi)
 
 ---
 
-## 👔 Panduan Pengurus / Administrator Koperasi
+## 🔐 Sistem Kontrol Lisensi
 
-1. **Mengakses Panel Admin:**
-   * Login dengan akun Pengurus / Super Admin (`081100000001` / PIN `1234`).
-   * Akses URL `/admin` atau klik menu Profil ➔ **`[Masuk ke Panel Admin]`**.
-2. **Menangani Pesanan & Stok Habis (Item Availability):**
-   * Buka tab **Pesanan** ➔ klik pesanan berstatus *Pending*.
-   * Jika ada barang yang kosong di gerai, klik tombol **`[🚫 Stok Kosong]`** pada baris barang tersebut.
-   * Tagihan COD akan otomatis terkalkulasi ulang. Klik **`[💾 Simpan Penyesuaian]`** lalu klik **`[💬 Konfirmasi WA Pembeli]`** untuk mengirim pemberitahuan otomatis ke WhatsApp pembeli.
-3. **Menugaskan Kurir:**
-   * Setelah pesanan dikemas, pilih kurir dari **Dropdown Kurir Terdaftar** (misal: *Kurir Budi*).
-   * Klik **`[Tugaskan Kurir & Mulai Pengantaran]`** ➔ Pesanan otomatis muncul di HP kurir yang bersangkutan.
-4. **Kustomisasi Logo & Profil Desa:**
-   * Buka tab **Profil Desa & Koperasi**.
-   * Unggah logo resmi desa/koperasi ➔ Logo otomatis diperbarui di semua halaman, tab browser, dan struk belanja.
+Vendor dapat mengaktifkan / menonaktifkan layanan setiap klien kapan saja melalui **Google Sheet Master Lisensi** tanpa menyentuh kode apapun.
+
+> 📖 Panduan lengkap: **[docs/LICENSE_MANAGEMENT.md](./docs/LICENSE_MANAGEMENT.md)**
+
+| Status | Efek |
+| :--- | :--- |
+| `ACTIVE` | Toko, Admin, dan Mode Kurir berjalan normal |
+| `SUSPENDED` | Seluruh halaman terkunci otomatis (*Lock Screen*) |
+| Tanggal `expiresAt` terlampaui | Otomatis terkunci dengan pesan *"Masa lisensi habis"* |
+
+Perubahan status aktif dalam **~10 detik**, tanpa perlu deploy ulang. 🚀
 
 ---
 
-## 💻 Panduan Teknis & Pemeliharaan Kode Master
+## 📱 PWA (Progressive Web App)
+
+Aplikasi dapat diinstall di HP seperti APK Android / iOS:
+- **Android (Chrome):** Banner install otomatis muncul saat pertama buka
+- **iPhone (Safari):** Share ⎋ ➔ "Tambahkan ke Layar Utama"
+
+---
+
+## 💻 Perintah Developer
 
 ```bash
-# Push perubahan kode ke Google Apps Script Master
+# Push perubahan source code ke GAS Master
 clasp push --force
 
-# Membuat versi baru Library untuk seluruh klien
-clasp create-version "library-release-note"
-clasp update-deployment AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A
+# Buat versi baru library
+clasp create-version "deskripsi-update"
+
+# Update deployment aktif
+clasp update-deployment [DEPLOYMENT_ID]
 ```
 
-Untuk detail arsitektur teknis lengkap, silakan lihat dokumen [ARCHITECTURE.md](file:///Users/thorsi/Documents/work/kopdes-tools/ARCHITECTURE.md).
+---
+
+## 📞 Struktur Proyek
+
+```
+kopdes-tools/
+├── README.md                    ← Dokumen ini
+├── ARCHITECTURE.md              ← Spesifikasi teknis lengkap
+├── docs/
+│   ├── CLIENT_SETUP.md          ← Panduan setup untuk klien baru
+│   └── LICENSE_MANAGEMENT.md    ← Panduan manajemen lisensi (vendor)
+├── client-template/
+│   ├── Code.js                  ← Template Code.gs untuk klien
+│   └── README.md                ← Ringkasan setup untuk klien
+├── vercel-app/                  ← PWA Wrapper & Vercel Domain
+│   ├── index.html               ← Wrapper iframe + Service Worker
+│   ├── manifest.json            ← PWA Manifest
+│   └── vercel.json              ← Konfigurasi Vercel SPA
+└── src/                         ← Source code Master GAS Library
+    ├── Code.js                  ← Entry point & exported functions
+    ├── Seed.js                  ← Script data demo
+    ├── core/
+    │   ├── database/            ← Database abstraction layer
+    │   ├── auth/                ← RBAC & Authentication
+    │   └── license/             ← Master License System
+    └── apps/gerai-online/
+        ├── controllers/         ← Business logic controllers
+        └── views/               ← HTML UI (Storefront, Admin, Kurir)
+```
