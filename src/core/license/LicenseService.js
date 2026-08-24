@@ -15,7 +15,7 @@
 var LicenseService = (function () {
 
   var CACHE_KEY_PREFIX = 'kopdes_lic_';
-  var CACHE_DURATION_SECONDS = 300; // Cache 5 menit
+  var CACHE_DURATION_SECONDS = 10; // Cache 10 detik agar perubahan status instan real-time
   var PROP_MASTER_SHEET_ID = 'MASTER_LICENSE_SHEET_ID';
   var DEFAULT_MASTER_LICENSE_SHEET_ID = '10EiC_jCjDb451JkkSctbtJsflcRsD4MwfzYXvQNx0a0';
 
