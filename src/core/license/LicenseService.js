@@ -231,6 +231,9 @@ var LicenseService = (function () {
       }
 
       var clientName = String(foundRow[nameIdx] || 'Koperasi Desa').trim();
+      var rawStatus = String(foundRow[statusIdx] || 'ACTIVE').toUpperCase().trim();
+      var rawExp = foundRow[expIdx];
+
       // Klien Dinonaktifkan Manual oleh Vendor (Hanya status ACTIVE yang diizinkan)
       if (rawStatus !== 'ACTIVE') {
         var statusType = (rawStatus === 'EXPIRED') ? 'EXPIRED' : 'SUSPENDED';
