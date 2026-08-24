@@ -15,8 +15,9 @@
 var LicenseService = (function () {
 
   var CACHE_KEY_PREFIX = 'kopdes_lic_';
-  var CACHE_DURATION_SECONDS = 1800; // Cache 30 menit
+  var CACHE_DURATION_SECONDS = 300; // Cache 5 menit
   var PROP_MASTER_SHEET_ID = 'MASTER_LICENSE_SHEET_ID';
+  var DEFAULT_MASTER_LICENSE_SHEET_ID = '10EiC_jCjDb451JkkSctbtJsflcRsD4MwfzYXvQNx0a0';
 
   /**
    * Membuat file Google Spreadsheet Master Lisensi baru di Google Drive Vendor.
@@ -111,11 +112,12 @@ var LicenseService = (function () {
   }
 
   /**
-   * Mengambil ID Master Spreadsheet Lisensi dari Script Properties.
+   * Mengambil ID Master Spreadsheet Lisensi dari Script Properties atau Default ID.
    * @returns {string}
    */
   function getMasterLicenseSheetId() {
-    return PropertiesService.getScriptProperties().getProperty(PROP_MASTER_SHEET_ID) || '';
+    var id = PropertiesService.getScriptProperties().getProperty(PROP_MASTER_SHEET_ID);
+    return (id && id.trim() !== '') ? id.trim() : DEFAULT_MASTER_LICENSE_SHEET_ID;
   }
 
   /**
@@ -150,7 +152,14 @@ var LicenseService = (function () {
 
     var targetId = '';
     try {
-      targetId = customSpreadsheetId || Database.getSpreadsheetId() || '';
+      if (customSpreadsheetId && typeof customSpreadsheetId === 'string' && customSpreadsheetId.trim() !== '') {
+        targetId = customSpreadsheetId.trim();
+      } else if (Database.getSpreadsheetId()) {
+        targetId = Database.getSpreadsheetId();
+      } else {
+        var activeSs = SpreadsheetApp.getActiveSpreadsheet();
+        if (activeSs) targetId = activeSs.getId();
+      }
     } catch(e) {
       targetId = customSpreadsheetId || '';
     }
