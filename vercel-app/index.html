@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Gerai Kopdes Online — Belanja Digital Koperasi Desa</title>
-    
+
     <!-- ===== SEO & SOCIAL SHARE ===== -->
-    <meta name="description" content="Belanja produk sembako, hasil bumi, dan produk UMKM desa langsung dari Koperasi Desa." />
+    <meta name="description"
+        content="Belanja produk sembako, hasil bumi, dan produk UMKM desa langsung dari Koperasi Desa." />
     <meta property="og:title" content="Gerai Kopdes Online — Belanja Digital Koperasi Desa" />
     <meta property="og:description" content="Belanja kebutuhan harian dan produk lokal desa dengan harga terjangkau." />
     <meta property="og:type" content="website" />
@@ -23,7 +25,8 @@
     <!-- ===== FONTS ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
 
     <style>
         * {
@@ -31,7 +34,9 @@
             margin: 0;
             padding: 0;
         }
-        html, body {
+
+        html,
+        body {
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -56,6 +61,7 @@
             transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
         }
+
         #app-frame.loaded {
             opacity: 1;
         }
@@ -75,6 +81,7 @@
             text-align: center;
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
+
         #splash.hidden {
             opacity: 0;
             visibility: hidden;
@@ -99,6 +106,7 @@
             letter-spacing: -0.02em;
             margin-bottom: 6px;
         }
+
         .splash-title span {
             color: #DC2626;
         }
@@ -120,14 +128,25 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
+
         @keyframes pulseLogo {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ===== SPLASH LOADING ===== -->
@@ -139,19 +158,26 @@
     </div>
 
     <!-- ===== FULL SCREEN WEB APP ===== -->
-    <iframe id="app-frame" title="Gerai Kopdes" allow="geolocation; camera; microphone; payment; clipboard-read; clipboard-write;"></iframe>
+    <iframe id="app-frame" title="Gerai Kopdes"
+        allow="geolocation; camera; microphone; payment; clipboard-read; clipboard-write;"></iframe>
 
     <!-- ===== PWA INSTALL BANNER ===== -->
-    <div id="pwa-install-banner" style="display:none;position:fixed;bottom:16px;left:16px;right:16px;max-width:420px;margin:0 auto;background:#0F172A;color:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 12px 30px rgba(0,0,0,0.35);z-index:9999;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.12);">
-        <img src="/icons/icon-192.png" style="width:40px;height:40px;border-radius:10px;object-fit:cover;background:#fff;padding:2px;flex-shrink:0;" alt="Logo" />
+    <div id="pwa-install-banner"
+        style="display:none;position:fixed;bottom:16px;left:16px;right:16px;max-width:420px;margin:0 auto;background:#0F172A;color:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 12px 30px rgba(0,0,0,0.35);z-index:9999;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.12);">
+        <img src="/icons/icon-192.png"
+            style="width:40px;height:40px;border-radius:10px;object-fit:cover;background:#fff;padding:2px;flex-shrink:0;"
+            alt="Logo" />
         <div style="flex:1;min-width:0;">
             <div style="font-weight:800;font-size:13px;line-height:1.2;color:#fff;">Pasang Aplikasi Kopdes</div>
             <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Akses cepat di layar utama HP Anda</div>
         </div>
-        <button id="pwa-install-btn" style="background:#DC2626;color:#fff;border:none;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">
+        <button id="pwa-install-btn"
+            style="background:#DC2626;color:#fff;border:none;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">
             Install
         </button>
-        <button onclick="dismissPwaBanner()" style="background:transparent;border:none;color:#64748B;font-size:16px;cursor:pointer;padding:4px;" title="Tutup">
+        <button onclick="dismissPwaBanner()"
+            style="background:transparent;border:none;color:#64748B;font-size:16px;cursor:pointer;padding:4px;"
+            title="Tutup">
             ✕
         </button>
     </div>
@@ -160,13 +186,13 @@
         function dismissPwaBanner() {
             var b = document.getElementById('pwa-install-banner');
             if (b) b.style.display = 'none';
-            try { localStorage.setItem('kopdes_pwa_banner_shown', 'true'); } catch(e) {}
+            try { localStorage.setItem('kopdes_pwa_banner_shown', 'true'); } catch (e) { }
         }
 
-        (function() {
+        (function () {
             // Register Service Worker for PWA criteria
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                navigator.serviceWorker.register('/sw.js').catch(function (err) {
                     console.log('SW registration note:', err);
                 });
             }
@@ -175,23 +201,23 @@
             var installBanner = document.getElementById('pwa-install-banner');
             var installBtn = document.getElementById('pwa-install-btn');
             var bannerAlreadyShown = false;
-            try { bannerAlreadyShown = localStorage.getItem('kopdes_pwa_banner_shown') === 'true'; } catch(e) {}
+            try { bannerAlreadyShown = localStorage.getItem('kopdes_pwa_banner_shown') === 'true'; } catch (e) { }
 
-            window.addEventListener('beforeinstallprompt', function(e) {
+            window.addEventListener('beforeinstallprompt', function (e) {
                 e.preventDefault();
                 deferredPrompt = e;
                 if (installBanner && !bannerAlreadyShown) {
                     installBanner.style.display = 'flex';
-                    try { localStorage.setItem('kopdes_pwa_banner_shown', 'true'); } catch(err) {}
+                    try { localStorage.setItem('kopdes_pwa_banner_shown', 'true'); } catch (err) { }
                 }
             });
 
             if (installBtn) {
-                installBtn.addEventListener('click', function() {
+                installBtn.addEventListener('click', function () {
                     dismissPwaBanner();
                     if (deferredPrompt) {
                         deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then(function(choiceResult) {
+                        deferredPrompt.userChoice.then(function (choiceResult) {
                             deferredPrompt = null;
                         });
                     } else {
@@ -202,7 +228,7 @@
             }
 
             // Google Apps Script Base Endpoint
-            var GAS_BASE_URL = 'https://script.google.com/macros/s/AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A/exec';
+            var GAS_BASE_URL = 'https://script.google.com/macros/s/AKfycbz4jvCVCtVkljNxvLOA_Dj1WbsUHmrJsuaCOrCGwrG1VRscHc2Rv_7R_CYfbDy1PBwe/exec';
 
             var currentSearch = window.location.search || '';
             var currentPath = window.location.pathname || '';
@@ -226,20 +252,20 @@
 
             frame.src = getTargetGasUrl(initialPage);
 
-            frame.onload = function() {
+            frame.onload = function () {
                 frame.classList.add('loaded');
-                setTimeout(function() {
+                setTimeout(function () {
                     splash.classList.add('hidden');
                 }, 300);
             };
 
             // Listen for internal navigation and PWA install events from Apps Script
-            window.addEventListener('message', function(e) {
+            window.addEventListener('message', function (e) {
                 if (!e.data) return;
 
                 if (e.data.type === 'NAVIGATE') {
                     var page = e.data.page || 'index';
-                    
+
                     splash.classList.remove('hidden');
                     frame.classList.remove('loaded');
                     frame.src = getTargetGasUrl(page);
@@ -258,11 +284,12 @@
             });
 
             // Fallback timeout to guarantee splash removal
-            setTimeout(function() {
+            setTimeout(function () {
                 frame.classList.add('loaded');
                 splash.classList.add('hidden');
             }, 3000);
         })();
     </script>
 </body>
+
 </html>
