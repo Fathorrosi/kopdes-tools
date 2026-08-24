@@ -8,7 +8,10 @@
  */
 
 // eslint-disable-next-line no-unused-vars
-function seedData() {
+function seedData(config) {
+  if (config && config.spreadsheetId) {
+    Database.setSpreadsheetId(config.spreadsheetId);
+  }
   Logger.log('🌱 Memulai seed data produk, pengguna, dan pesanan...');
   _seedOrSyncProducts();
   _seedOrSyncUsers();

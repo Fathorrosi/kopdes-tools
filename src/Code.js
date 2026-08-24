@@ -81,6 +81,16 @@ function include(filename) { // eslint-disable-line no-unused-vars
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
+/**
+ * Entry point untuk pemanggil Library (KopdesEngine.serve(e, config))
+ */
+function serve(e, config) { // eslint-disable-line no-unused-vars
+  if (config && config.spreadsheetId) {
+    Database.setSpreadsheetId(config.spreadsheetId);
+  }
+  return doGet(e);
+}
+
 // ============================================================
 //  SETUP
 // ============================================================
@@ -88,8 +98,12 @@ function include(filename) { // eslint-disable-line no-unused-vars
 /**
  * Inisialisasi awal — buat semua tabel yang diperlukan.
  * Panggil sekali saat pertama kali deploy.
+ * @param {Object} [config]
  */
-function setupApp() { // eslint-disable-line no-unused-vars
+function setupApp(config) { // eslint-disable-line no-unused-vars
+  if (config && config.spreadsheetId) {
+    Database.setSpreadsheetId(config.spreadsheetId);
+  }
   Auth.setup();
   ProductController.setup();
   OrderController.setup();
@@ -103,6 +117,18 @@ function setupApp() { // eslint-disable-line no-unused-vars
 /** @returns {Object[]} Semua produk aktif (untuk storefront) */
 function getActiveProducts() { // eslint-disable-line no-unused-vars
   return ProductController.getAllActive();
+}
+
+/** @returns {string[]} Daftar kategori produk unik */
+function getProductCategories() { // eslint-disable-line no-unused-vars
+  var products = ProductController.getAllActive();
+  var categories = ['Semua'];
+  products.forEach(function(p) {
+    if (p.category && categories.indexOf(p.category) === -1) {
+      categories.push(p.category);
+    }
+  });
+  return categories;
 }
 
 /** @returns {Object[]} Semua produk (untuk admin) */
@@ -163,6 +189,11 @@ function createNewOrder(orderData) { // eslint-disable-line no-unused-vars
   return OrderController.createOrder(orderData);
 }
 
+/** Alias untuk createNewOrder */
+function createOrder(orderData) { // eslint-disable-line no-unused-vars
+  return OrderController.createOrder(orderData);
+}
+
 /**
  * Mengambil riwayat pesanan milik customer yang sedang aktif/login.
  * @param {string} [userId]
@@ -171,6 +202,20 @@ function createNewOrder(orderData) { // eslint-disable-line no-unused-vars
  */
 function getMyOrders(userId, phone) { // eslint-disable-line no-unused-vars
   return OrderController.getCustomerOrders(userId, phone);
+}
+
+/** Alias untuk getMyOrders */
+function getCustomerOrders(userId, phone) { // eslint-disable-line no-unused-vars
+  return OrderController.getCustomerOrders(userId, phone);
+}
+
+/**
+ * Mengambil detail pesanan berdasarkan ID.
+ * @param {string} orderId
+ * @returns {Object|null}
+ */
+function getOrderById(orderId) { // eslint-disable-line no-unused-vars
+  return OrderController.getOrderById(orderId);
 }
 
 /**
@@ -309,7 +354,12 @@ function completeCourierDelivery(payload) { // eslint-disable-line no-unused-var
  * @returns {Object}
  */
 function checkAppLicense() { // eslint-disable-line no-unused-vars
-  return LicenseService.checkLicense();
+  return LicenseService.validate();
+}
+
+/** Alias untuk checkAppLicense */
+function checkLicense() { // eslint-disable-line no-unused-vars
+  return LicenseService.validate();
 }
 
 // ============================================================
