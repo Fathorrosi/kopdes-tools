@@ -21,7 +21,8 @@
  */
 function doGet(e) { // eslint-disable-line no-unused-vars
   // 1. Validasi Lisensi Klien (Auto Lock Screen jika suspended / expired / unregistered)
-  var lic = LicenseService.validate(e && e.parameter && e.parameter.spreadsheetId);
+  var targetId = (e && e.parameter && e.parameter.spreadsheetId) || Database.getSpreadsheetId() || '';
+  var lic = LicenseService.validate(targetId);
   if (lic && !lic.valid) {
     return LicenseService.renderLockScreen(lic);
   }

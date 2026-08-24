@@ -222,18 +222,16 @@ var LicenseService = (function () {
       }
 
       var clientName = String(foundRow[nameIdx] || 'Koperasi Desa').trim();
-      var rawStatus = String(foundRow[statusIdx] || 'ACTIVE').toUpperCase().trim();
-      var rawExp = foundRow[expIdx];
-
-      // Klien Dinonaktifkan Manual oleh Vendor
-      if (rawStatus === 'SUSPENDED' || rawStatus === 'NONAKTIF' || rawStatus === 'DISABLED' || rawStatus === 'BLOCKED') {
+      // Klien Dinonaktifkan Manual oleh Vendor (Hanya status ACTIVE yang diizinkan)
+      if (rawStatus !== 'ACTIVE') {
+        var statusType = (rawStatus === 'EXPIRED') ? 'EXPIRED' : 'SUSPENDED';
         var suspendedRes = {
           valid: false,
-          status: 'SUSPENDED',
+          status: statusType,
           clientName: clientName,
           message: 'Layanan Kopdes Tools untuk ' + clientName + ' sedang ditangguhkan/dinonaktifkan oleh administrator. Silakan hubungi penyedia layanan untuk informasi lebih lanjut.'
         };
-        cache.put(cacheKey, JSON.stringify(suspendedRes), 300);
+        cache.put(cacheKey, JSON.stringify(suspendedRes), 60);
         return suspendedRes;
       }
 
