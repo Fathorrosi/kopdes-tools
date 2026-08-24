@@ -4,15 +4,15 @@
 **Kopdes Tools** adalah ekosistem aplikasi ringan (*Micro-SaaS*) modern yang dirancang khusus untuk Koperasi Desa (Kopdes). Aplikasi ini memungkinkan Koperasi Desa memiliki layanan digital lengkap (Gerai Online, Manajemen Stok, Panel Pengurus, Pelacakan Pesanan Pembeli, dan Portal Khusus Kurir Pengantaran) tanpa perlu menyewa *server database* berbayar.
 
 * **Target Solusi:** Gerai Kopdes Online (PWA Mobile-First, Katalog Produk, Keranjang, Checkout COD, Manajemen Pesanan, Penyesuaian Stok Otomatis, dan Aplikasi Pengantaran Kurir Lapangan).
-* **Live Custom Domain (PWA):** `https://kopdes-samatan.vercel.app`
-* **Google Apps Script Deployment ID:** `AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A`
-* **Status:** ✅ Production Ready — Versi Terpadu 1 Aplikasi (Toko + Admin + Kurir + PWA APK).
+* **Live Custom Domain (PWA Master):** `https://kopdes-samatan.vercel.app`
+* **Google Apps Script Core Library ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `119`)
+* **Status:** ✅ Production Ready — Versi Terpadu 1 Aplikasi (Toko + Admin + Kurir + PWA APK + Managed Library Mode).
 
 ---
 
 ## 2. Technology Stack & Ekosistem
 * **Backend & API:** Google Apps Script (GAS) — Runtime V8 Engine.
-* **Database:** Google Sheets (berada di Google Drive milik Koperasi Desa).
+* **Database:** Google Sheets (berada di Google Drive milik Koperasi Desa masing-masing).
 * **Asset Storage:** Google Drive (Folder otomatis *Gerai Kopdes Assets* untuk foto produk, logo koperasi, dan foto bukti serah terima kurir).
 * **Frontend:** Vanilla JavaScript (ES6+), HTML5 Semantic, Custom Vanilla CSS Design System.
 * **PWA & Domain Wrapper:** Vercel Hosting (`vercel-app/`) + Service Worker + Web App Manifest (Dapat diinstall sebagai APK / Add to Home Screen di Android & iOS).
@@ -28,8 +28,10 @@
    * `SheetAdapter.js` adalah **satu-satunya** file yang boleh memanggil `SpreadsheetApp`.
 2. **Tenant Isolation:**
    * Satu lisensi aplikasi = Satu Kopdes = Satu Google Sheet.
-3. **Modularitas:**
-   * Terbagi menjadi `src/core/` (database, auth, license) dan `src/apps/` (controllers & views).
+3. **Modularitas & Managed SaaS Library Architecture:**
+   * Seluruh logika backend (`core/` dan `apps/`) di-deploy sebagai **Google Apps Script Library (`KopdesEngine`)**.
+   * Klien (Koperasi Desa) hanya menyalin file jembatan tipis (`client-template/Code.js`) yang terhubung ke Library Master.
+   * **Hasil:** Source code Anda 100% aman (tidak bisa dicuri/dijual lagi) dan data warga tetap aman di Google Drive desa.
 4. **License Enforcement (Fail-Closed):**
    * `LicenseService.require()` dipanggil saat operasi penulisan data utama (*checkout* order). Cache validasi disimpan di `CacheService`.
 5. **Single Unified Application Architecture:**
@@ -45,6 +47,9 @@ kopdes-tools/
 ├── appsscript.json              ← Manifest GAS root
 ├── ARCHITECTURE.md              ← Dokumentasi arsitektur sistem & spesifikasi teknis
 ├── README.md                    ← Panduan umum penggunaan & deployment
+├── client-template/             ← Template script jembatan untuk Koperasi Klien
+│   ├── Code.js                  ← Shell script 1-file yang disalin ke Apps Script Klien
+│   └── README.md                ← Panduan instalasi 2 menit untuk Koperasi Klien
 ├── vercel-app/                  ← PWA Wrapper & Custom Domain (Vercel)
 │   ├── index.html               ← Wrapper iframe GAS, Service Worker & PWA Install handler
 │   ├── manifest.json            ← PWA Manifest (Nama Kopdes, icons, theme color)
@@ -53,12 +58,12 @@ kopdes-tools/
 │   └── icons/                   ← Icon PWA (192x192, 512x512)
 └── src/                         ← Sumber kode utama yang di-push ke GAS
     ├── appsscript.json          ← Manifest GAS (Timezone Jakarta, V8 runtime)
-    ├── Code.js                  ← Entry point: doGet() router + endpoint exposed
+    ├── Code.js                  ← Entry point: doGet() router + endpoint exposed + KopdesEngine exports
     ├── Seed.js                  ← Script seed data demo (Akun, Produk & Gambar)
     ├── core/
     │   ├── database/
     │   │   ├── Database.js      ← ORM abstraction: getAll, getById, insert, update, query
-    │   │   └── SheetAdapter.js  ← Low-level Google Sheets adapter (SpreadsheetApp)
+    │   │   └── SheetAdapter.js  ← Low-level Google Sheets adapter (SpreadsheetApp & openById)
     │   ├── auth/
     │   │   └── Auth.js          ← RBAC, Normalisasi Phone, Login PIN, Multi-Role
     │   └── license/
@@ -192,7 +197,7 @@ Sistem menggunakan autentikasi berbasis Kredensial (Nomor HP / Email / Username)
 
 ---
 
-## 9. Konfigurasi Script Properties (Google Apps Script)
+## 9. Konfigurasi Script Properties (Google Apps Script Master)
 
 | Property Key | Contoh Nilai | Deskripsi |
 | :--- | :--- | :--- |
@@ -210,11 +215,11 @@ Sistem menggunakan autentikasi berbasis Kredensial (Nomor HP / Email / Username)
 ## 10. Perintah Deployment & Pemeliharaan
 
 ```bash
-# Push perubahan sumber kode ke Google Apps Script
+# Push perubahan sumber kode ke Google Apps Script Master
 clasp push --force
 
-# Buat versi baru deployment
-clasp create-version "release-note"
+# Buat versi baru Library
+clasp create-version "library-release-note"
 
 # Update deployment ID aktif
 clasp update-deployment AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A

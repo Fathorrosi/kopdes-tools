@@ -1,10 +1,11 @@
 # 🛒 Kopdes Gerai Online — Panduan Penggunaan & Dokumentasi Sistem
 
-**Kopdes Gerai Online** adalah sistem aplikasi belanja digital (Micro-SaaS) berbasis cloud terpadu untuk Koperasi Desa (Kopdes), yang mengintegrasikan Storefront Pembeli, Panel Pengurus Koperasi, dan Portal Pengantaran Khusus Kurir dalam **1 aplikasi terpadu**.
+**Kopdes Gerai Online** adalah sistem aplikasi belanja digital (*Micro-SaaS*) berbasis cloud terpadu untuk Koperasi Desa (Kopdes), yang mengintegrasikan Storefront Pembeli, Panel Pengurus Koperasi, dan Portal Pengantaran Khusus Kurir dalam **1 aplikasi terpadu**.
 
-* 🌐 **Aplikasi Web & PWA:** [https://kopdes-samatan.vercel.app](https://kopdes-samatan.vercel.app)
-* ⚡ **Backend Engine:** Google Apps Script & Google Sheets
+* 🌐 **Aplikasi Web & PWA Master:** [https://kopdes-samatan.vercel.app](https://kopdes-samatan.vercel.app)
+* ⚡ **Core Library ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `119`)
 * 📁 **Penyimpanan Media:** Google Drive (*Folder: Gerai Kopdes Assets*)
+* 🏢 **Arsitektur Distribusi:** Managed SaaS Library Mode (Anti-Bypass & Anti-Jual Ulang)
 
 ---
 
@@ -21,46 +22,40 @@
 
 ---
 
-## 🛠️ Panduan Setup Awal & Inisialisasi Aplikasi (Fresh Install)
+## 🏢 Panduan Pemasangan Klien Baru (Managed SaaS Library Mode)
 
-Berikut adalah panduan langkah demi langkah saat menyiapkan aplikasi Kopdes Tools dari awal:
+Dengan arsitektur **Managed SaaS Library**, Koperasi Desa klien mendapatkan aplikasi yang berjalan di Google Drive mereka sendiri, namun **source code logika bisnis dan UI Anda tetap 100% aman dan tidak bisa dicuri/dijual lagi**.
 
-### Langkah 1: Konfigurasi Script Properties (GAS)
-1. Buka project script di **Google Apps Script Editor**.
-2. Masuk ke menu **Project Settings** (ikon gerigi ⚙️ di sebelah kiri) ➔ gulir ke bagian **Script Properties**.
-3. Tambahkan properti berikut:
-   * `KOPDES_NAME` : `Samatan` (atau nama koperasi desa Anda)
-   * `VILLAGE_NAME` : `Desa Samatan`
-   * `VILLAGE_ADDRESS` : `Jl. Raya Desa Samatan No. 12`
-   * `VILLAGE_CONTACT` : `081234567890`
-   * `LOGO_URL` : URL gambar logo resmi koperasi
-   * `HERO_BG_URL` : URL gambar background banner utama toko
-   * `ADMIN_PIN` : `1234` (Master PIN pengurus)
+### Langkah 1: Klien Menyiapkan Google Sheet
+1. Buka Google Drive Koperasi Desa ➔ Buat **Google Spreadsheet Baru** (Beri nama misal: `Database Kopdes Lenteng`).
+2. Buka menu **Ekstensi (Extensions)** ➔ **Apps Script**.
 
-### Langkah 2: Inisialisasi Database (`setupApp`)
-1. Di Google Apps Script Editor, buka file `Code.gs` / `Code.js`.
-2. Pada dropdown fungsi di toolbar atas, pilih fungsi **`setupApp`**.
-3. Klik tombol **▶️ Run**.
-4. Berikan izin otorisasi akses Google Spreadsheet & Google Drive jika diminta.
-5. Sistem akan otomatis membuat tab sheet `products`, `orders`, dan `users` dengan header kolom yang lengkap.
+### Langkah 2: Tambahkan Library Core Engine
+1. Di bilah menu kiri Apps Script, klik tanda tambah (**+**) di sebelah **Libraries (Pustaka)**.
+2. Masukkan **Script ID Core Engine**:
+   ```text
+   1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y
+   ```
+3. Klik **Look up (Cari)**.
+4. Pilih versi terbaru (**`119`**), pastikan Identifier tertulis: **`KopdesEngine`**.
+5. Klik **Add (Tambahkan)**.
 
-### Langkah 3: Pengisian Data Awal Demo (`seedData`)
-1. Pada dropdown fungsi di toolbar atas, pilih fungsi **`seedData`**.
-2. Klik tombol **▶️ Run**.
-3. Fungsi ini otomatis mengisi:
-   * **Katalog Produk:** 25+ produk sembako dan kebutuhan harian desa lengkap dengan foto, kategori, dan promo diskon.
-   * **Akun Pengguna:** Super Admin, 2 Akun Pengurus, 2 Akun Kurir (`Kurir Budi` & `Kurir Ahmad Fauzi`), dan 10 Akun Anggota Koperasi.
-   * **Pesanan Sample:** 4 pesanan contoh dalam berbagai status (*pending*, *processing*, *delivering*, dan *completed*) untuk pengujian alur Toko ➔ Admin ➔ Kurir.
+### Langkah 3: Salin Kode Client Shell
+1. Buka file `Code.gs` di Apps Script Klien.
+2. Hapus kodenya dan ganti dengan isi dari file **[`client-template/Code.js`](file:///Users/thorsi/Documents/work/kopdes-tools/client-template/Code.js)**.
+3. Klik **Save (Simpan 💾)**.
 
-### Langkah 4: Publikasi Web App & PWA Vercel
-1. Klik tombol **Deploy** di pojok kanan atas ➔ pilih **New Deployment** (atau **Manage Deployments**).
-2. Konfigurasi:
-   * **Select type:** Web app
-   * **Execute as:** *Me (email Anda)*
-   * **Who has access:** *Anyone (Siapa saja)*
-3. Salin Web App URL atau Deployment ID.
-4. Pada file `vercel-app/index.html`, pastikan `GAS_BASE_URL` mengarah ke Deployment ID aktif tersebut.
-5. Deploy folder `vercel-app/` ke Vercel untuk mengaktifkan custom domain dan dukungan PWA APK.
+### Langkah 4: Inisialisasi Database Klien
+1. Pada dropdown toolbar fungsi di atas, pilih fungsi **`setupApp`** ➔ Klik **▶️ Run**.
+   * *Google Sheet klien otomatis terbuat tabel `products`, `orders`, dan `users`.*
+2. Pilih fungsi **`seedData`** ➔ Klik **▶️ Run**.
+   * *Otomatis mengisi 25+ produk sembako dan akun demo ke spreadsheet klien.*
+
+### Langkah 5: Deploy Web App Klien
+1. Klik tombol **Deploy** di kanan atas ➔ **New deployment**.
+2. Pilih **Web app**, set *Execute as: Me*, *Who has access: Anyone*.
+3. Klik **Deploy** ➔ Salin **Web app URL** yang dihasilkan.
+4. Toko Online Koperasi Desa sudah langsung aktif dan siap digunakan!
 
 ---
 
@@ -68,13 +63,13 @@ Berikut adalah panduan langkah demi langkah saat menyiapkan aplikasi Kopdes Tool
 
 Aplikasi dapat dipasang di layar utama smartphone layaknya aplikasi Android/iOS asli:
 
-1. Buka tautan **`https://kopdes-samatan.vercel.app`** di browser smartphone (Google Chrome untuk Android, Safari untuk iPhone).
+1. Buka tautan web app di browser smartphone (Google Chrome untuk Android, Safari untuk iPhone).
 2. **Android (Chrome):**
    * Saat pertama kali membuka, akan muncul banner **"Pasang Aplikasi Kopdes"** di bagian bawah layar. Klik **`[Install]`**.
    * Atau ketuk menu titik tiga (⋮) di pojok kanan atas ➔ pilih **"Instal Aplikasi"** / **"Tambahkan ke Layar Utama"**.
 3. **iPhone (Safari):**
    * Ketuk tombol **Bagikan (Share ⎋)** di baris bawah Safari ➔ gulir ke bawah dan pilih **"Tambahkan ke Layar Utama" (Add to Home Screen)**.
-4. Ikon **Kopdes Samatan** akan muncul di layar utama HP dan dapat dibuka secara *fullscreen* tanpa *browser bar*.
+4. Ikon **Kopdes Online** akan muncul di layar utama HP dan dapat dibuka secara *fullscreen* tanpa *browser bar*.
 
 ---
 
@@ -116,14 +111,14 @@ Aplikasi dapat dipasang di layar utama smartphone layaknya aplikasi Android/iOS 
 
 ---
 
-## 💻 Panduan Teknis & Pemeliharaan Kode
+## 💻 Panduan Teknis & Pemeliharaan Kode Master
 
 ```bash
-# Push perubahan kode ke Google Apps Script
+# Push perubahan kode ke Google Apps Script Master
 clasp push --force
 
-# Membuat versi baru dan memperbarui deployment aktif
-clasp create-version "update-note"
+# Membuat versi baru Library untuk seluruh klien
+clasp create-version "library-release-note"
 clasp update-deployment AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A
 ```
 
