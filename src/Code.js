@@ -20,6 +20,12 @@
  * @returns {GoogleAppsScript.HTML.HtmlOutput}
  */
 function doGet(e) { // eslint-disable-line no-unused-vars
+  // 1. Validasi Lisensi Klien (Auto Lock Screen jika suspended / expired / unregistered)
+  var lic = LicenseService.validate(e && e.parameter && e.parameter.spreadsheetId);
+  if (lic && !lic.valid) {
+    return LicenseService.renderLockScreen(lic);
+  }
+
   var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'index';
   var template;
 
@@ -360,6 +366,22 @@ function checkAppLicense() { // eslint-disable-line no-unused-vars
 /** Alias untuk checkAppLicense */
 function checkLicense() { // eslint-disable-line no-unused-vars
   return LicenseService.validate();
+}
+
+/**
+ * Membuat Master Spreadsheet Lisensi baru di Google Drive Vendor.
+ * Jalankan fungsi ini sekali dari GAS Editor Master.
+ */
+function createMasterLicenseSheet() { // eslint-disable-line no-unused-vars
+  return LicenseService.createMasterLicenseSheet();
+}
+
+/**
+ * Menghapus cache lisensi untuk memaksa re-validasi instan.
+ */
+function clearLicenseCache() { // eslint-disable-line no-unused-vars
+  LicenseService.clearCache();
+  Logger.log('[LicenseService] Cache lisensi berhasil dibersihkan.');
 }
 
 // ============================================================
