@@ -573,3 +573,62 @@ function _getKopdesName() {
 function _getHeroBgUrl() {
   return getVillageProfile().heroBgUrl;
 }
+
+// ============================================================
+//  MANAGED SAAS LIBRARY EXPORT (KopdesEngine)
+// ============================================================
+
+// eslint-disable-next-line no-unused-vars
+var KopdesEngine = {
+  init: function(config) {
+    if (config && config.spreadsheetId) {
+      Database.setSpreadsheetId(config.spreadsheetId);
+    }
+  },
+  serve: function(e, config) {
+    if (config && config.spreadsheetId) {
+      Database.setSpreadsheetId(config.spreadsheetId);
+    }
+    return doGet(e);
+  },
+  include: function(filename) {
+    return include(filename);
+  },
+  setupApp: function(config) {
+    if (config && config.spreadsheetId) {
+      Database.setSpreadsheetId(config.spreadsheetId);
+    }
+    return setupApp();
+  },
+  seedData: function(config) {
+    if (config && config.spreadsheetId) {
+      Database.setSpreadsheetId(config.spreadsheetId);
+    }
+    return seedData();
+  },
+  // Exposed APIs for client RPC bridge
+  getActiveProducts: getActiveProducts,
+  getAllProducts: getAllProducts,
+  getProductCategories: getProductCategories,
+  createProduct: createProduct,
+  updateProduct: updateProduct,
+  deleteProduct: deleteProduct,
+  uploadImage: uploadImage,
+  createOrder: createOrder,
+  getAllOrders: getAllOrders,
+  getOrderById: getOrderById,
+  getCustomerOrders: getCustomerOrders,
+  updateOrderStatus: updateOrderStatus,
+  updateOrderItems: updateOrderItems,
+  getCourierOrders: getCourierOrders,
+  getCourierBootstrapData: getCourierBootstrapData,
+  completeCourierDelivery: completeCourierDelivery,
+  getVillageProfile: getVillageProfile,
+  updateVillageProfile: updateVillageProfile,
+  getAuthStatus: getAuthStatus,
+  loginUser: loginUser,
+  registerUser: registerUser,
+  getAllUsers: getAllUsers,
+  getCouriers: getCouriers,
+  checkLicense: checkLicense
+};

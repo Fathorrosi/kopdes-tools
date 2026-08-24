@@ -11,6 +11,46 @@
 // eslint-disable-next-line no-unused-vars
 var SheetAdapter = (function () {
 
+  var _customSpreadsheetId = null;
+
+  /**
+   * Mengatur ID Spreadsheet tujuan secara dinamis (untuk mode Managed Library).
+   * @param {string} id
+   */
+  function setSpreadsheetId(id) {
+    if (id && typeof id === 'string') {
+      _customSpreadsheetId = id.trim();
+    }
+  }
+
+  /**
+   * Mengambil ID Spreadsheet aktif saat ini.
+   * @returns {string}
+   */
+  function getSpreadsheetId() {
+    try {
+      var ss = _getSpreadsheet();
+      return ss ? ss.getId() : (_customSpreadsheetId || '');
+    } catch(e) {
+      return _customSpreadsheetId || '';
+    }
+  }
+
+  /**
+   * Mendapatkan instance Spreadsheet (Active atau by ID).
+   * @returns {GoogleAppsScript.Spreadsheet.Spreadsheet}
+   */
+  function _getSpreadsheet() {
+    if (_customSpreadsheetId) {
+      return SpreadsheetApp.openById(_customSpreadsheetId);
+    }
+    var active = SpreadsheetApp.getActiveSpreadsheet();
+    if (active) return active;
+    var propsId = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+    if (propsId) return SpreadsheetApp.openById(propsId);
+    throw new Error('[SheetAdapter] Tidak ada Spreadsheet aktif atau SPREADSHEET_ID yang dikonfigurasi.');
+  }
+
   /**
    * Mendapatkan sheet berdasarkan nama.
    * @param {string} sheetName - Nama sheet/tab di Spreadsheet.
@@ -18,7 +58,7 @@ var SheetAdapter = (function () {
    * @throws {Error} Jika sheet tidak ditemukan.
    */
   function _getSheet(sheetName) {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = _getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
       throw new Error('[SheetAdapter] Sheet tidak ditemukan: "' + sheetName + '"');
@@ -108,7 +148,7 @@ var SheetAdapter = (function () {
    * @param {string[]} headers - Array nama kolom untuk baris pertama.
    */
   function ensureSheet(sheetName, headers) {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = _getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
@@ -129,6 +169,8 @@ var SheetAdapter = (function () {
 
   // Public API
   return {
+    setSpreadsheetId: setSpreadsheetId,
+    getSpreadsheetId: getSpreadsheetId,
     getAll: getAll,
     getHeaders: getHeaders,
     insert: insert,

@@ -130,8 +130,26 @@ var Database = (function () {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   }
 
+  /**
+   * Mengatur ID Spreadsheet tujuan secara dinamis (Managed Library Mode).
+   * @param {string} id
+   */
+  function setSpreadsheetId(id) {
+    SheetAdapter.setSpreadsheetId(id);
+  }
+
+  /**
+   * Mengambil ID Spreadsheet aktif.
+   * @returns {string}
+   */
+  function getSpreadsheetId() {
+    return SheetAdapter.getSpreadsheetId();
+  }
+
   // Public API
   return {
+    setSpreadsheetId: setSpreadsheetId,
+    getSpreadsheetId: getSpreadsheetId,
     getAll: getAll,
     getById: getById,
     insert: insert,
