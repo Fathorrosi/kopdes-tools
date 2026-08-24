@@ -202,8 +202,56 @@
                 });
             }
 
-            // Google Apps Script Base Endpoint
-            var GAS_BASE_URL = 'https://script.google.com/macros/s/AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A/exec';
+            // ============================================================
+            //  UNIVERSAL MULTI-TENANT ROUTER (Solusi A: Wildcard & Query)
+            // ============================================================
+            var DEFAULT_DEPLOYMENT_ID = 'AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A';
+
+            // Daftar Pemetaan Subdomain / Kode Desa ke Deployment ID GAS
+            var TENANTS_REGISTRY = {
+                'samatan': {
+                    name: 'Kopdes Samatan',
+                    deploymentId: 'AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A'
+                },
+                'demo': {
+                    name: 'Gerai Kopdes Demo',
+                    deploymentId: 'AKfycbwKJn5sJ8lhSBbHs8gclTI-GneWRy6DU9HMqPxfbz0mXGkrwr-fmB6TkAm9w-4LXvv41A'
+                }
+            };
+
+            function resolveDeploymentId() {
+                var search = window.location.search || '';
+                var params = new URLSearchParams(search);
+
+                // 1. Prioritas: Query param langsung ?app=AKfy...
+                if (params.has('app') && params.get('app').trim() !== '') {
+                    return params.get('app').trim();
+                }
+
+                // 2. Query param ?desa=samatan
+                if (params.has('desa')) {
+                    var slug = params.get('desa').toLowerCase().trim();
+                    if (TENANTS_REGISTRY[slug]) {
+                        return TENANTS_REGISTRY[slug].deploymentId;
+                    }
+                }
+
+                // 3. Subdomain Wildcard (misal: samatan.kopdes.id atau samatan.vercel.app)
+                var host = window.location.hostname || '';
+                var parts = host.split('.');
+                if (parts.length >= 3 || (parts.length === 2 && host.indexOf('localhost') === -1)) {
+                    var sub = parts[0].toLowerCase().replace('-kopdes', '').replace('kopdes-', '');
+                    if (TENANTS_REGISTRY[sub]) {
+                        return TENANTS_REGISTRY[sub].deploymentId;
+                    }
+                }
+
+                // 4. Default Fallback
+                return DEFAULT_DEPLOYMENT_ID;
+            }
+
+            var ACTIVE_DEPLOYMENT_ID = resolveDeploymentId();
+            var GAS_BASE_URL = 'https://script.google.com/macros/s/' + ACTIVE_DEPLOYMENT_ID + '/exec';
 
             var currentSearch = window.location.search || '';
             var currentPath = window.location.pathname || '';
