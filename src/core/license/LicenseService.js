@@ -226,7 +226,7 @@ var LicenseService = (function () {
           clientName: 'Koperasi Desa',
           message: 'Aplikasi Google Spreadsheet ini belum terdaftar dalam lisensi resmi Kopdes Tools. Silakan hubungi penyedia layanan.'
         };
-        cache.put(cacheKey, JSON.stringify(unregRes), 300);
+        cache.put(cacheKey, JSON.stringify(unregRes), 20);
         return unregRes;
       }
 
@@ -240,7 +240,7 @@ var LicenseService = (function () {
           clientName: clientName,
           message: 'Layanan Kopdes Tools untuk ' + clientName + ' sedang ditangguhkan/dinonaktifkan oleh administrator. Silakan hubungi penyedia layanan untuk informasi lebih lanjut.'
         };
-        cache.put(cacheKey, JSON.stringify(suspendedRes), 60);
+        cache.put(cacheKey, JSON.stringify(suspendedRes), 20);
         return suspendedRes;
       }
 
@@ -261,7 +261,7 @@ var LicenseService = (function () {
               expiresAt: expStr,
               message: 'Masa lisensi Kopdes Tools untuk ' + clientName + ' telah berakhir pada ' + expStr + '. Silakan lakukan perpanjangan langganan untuk mengaktifkan kembali.'
             };
-            cache.put(cacheKey, JSON.stringify(expiredRes), 300);
+            cache.put(cacheKey, JSON.stringify(expiredRes), 20);
             return expiredRes;
           }
         }
