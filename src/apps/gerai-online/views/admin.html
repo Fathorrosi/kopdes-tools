@@ -1931,6 +1931,15 @@
 
             function init() {
                 var uid = localStorage.getItem('kopdes_user_id') || '';
+                if (uid && uid.indexOf('google-') === 0) {
+                    try {
+                        localStorage.removeItem('kopdes_user_id');
+                        localStorage.removeItem('kopdes_user');
+                        localStorage.removeItem('kopdes_admin_user');
+                        localStorage.removeItem('kopdes_active_user');
+                    } catch(e) {}
+                    uid = '';
+                }
                 
                 // Validasi Hak Akses Admin / Pengurus
                 google.script.run
