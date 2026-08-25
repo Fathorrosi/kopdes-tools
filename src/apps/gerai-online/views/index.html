@@ -3411,13 +3411,62 @@
 
                     carousel.appendChild(card);
                 });
+
+                // Mulai auto-scroll otomatis jika produk promo lebih dari 1
+                if (promoProducts.length > 1) {
+                    _initPromoAutoScroll();
+                }
+            }
+
+            var _promoAutoScrollTimer = null;
+            var _isPromoHovered = false;
+
+            function _initPromoAutoScroll() {
+                if (_promoAutoScrollTimer) {
+                    clearInterval(_promoAutoScrollTimer);
+                    _promoAutoScrollTimer = null;
+                }
+
+                var carousel = document.getElementById('promo-carousel');
+                if (!carousel) return;
+
+                // Pasang listener pause on hover/touch agar interaksi user tidak terganggu
+                if (!carousel.dataset.hasScrollListeners) {
+                    carousel.dataset.hasScrollListeners = 'true';
+
+                    carousel.addEventListener('mouseenter', function() { _isPromoHovered = true; });
+                    carousel.addEventListener('mouseleave', function() { _isPromoHovered = false; });
+                    carousel.addEventListener('touchstart', function() { _isPromoHovered = true; }, { passive: true });
+                    carousel.addEventListener('touchend', function() {
+                        setTimeout(function() { _isPromoHovered = false; }, 2500);
+                    }, { passive: true });
+                }
+
+                _promoAutoScrollTimer = setInterval(function() {
+                    if (_isPromoHovered) return;
+                    var c = document.getElementById('promo-carousel');
+                    if (!c || c.offsetParent === null) return;
+
+                    var maxScroll = c.scrollWidth - c.clientWidth;
+                    if (maxScroll <= 15) return;
+
+                    var step = window.innerWidth < 640 ? 180 : 236;
+
+                    // Jika sudah mencapai ujung kanan, balikkan ke awal
+                    if (c.scrollLeft >= maxScroll - 25) {
+                        c.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        c.scrollBy({ left: step, behavior: 'smooth' });
+                    }
+                }, 3500);
             }
 
             function scrollPromo(dir) {
                 var carousel = document.getElementById('promo-carousel');
                 if (carousel) {
-                    var scrollAmount = dir * (window.innerWidth < 640 ? 200 : 320);
+                    var scrollAmount = dir * (window.innerWidth < 640 ? 180 : 236);
                     carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    _initPromoAutoScroll();
                 }
             }
 
