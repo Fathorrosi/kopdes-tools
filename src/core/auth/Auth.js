@@ -473,24 +473,7 @@ var Auth = (function () {
       }
     }
 
-    // 3. Fallback Google Session jika ada
-    var gUser = getSessionUser();
-    if (gUser.email) {
-      return {
-        isLoggedIn: true,
-        user: {
-          id: 'google-' + gUser.email,
-          name: gUser.name,
-          email: gUser.email,
-          phone: '',
-          role: gUser.role,
-          isAdmin: gUser.isAdmin,
-          isStaff: gUser.isStaff,
-          address: ''
-        }
-      };
-    }
-
+    // Jika userId kosong atau tidak ditemukan, kembalikan status Guest (Tamu / Belum Login)
     return {
       isLoggedIn: false,
       user: null
