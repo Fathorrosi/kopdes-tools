@@ -197,19 +197,36 @@ Setelah login sebagai Admin, buka **Panel Admin ➔ Tab Profil Desa & Koperasi**
 
 ---
 
-## ❓ FAQ
+## 🔄 Cara Memperbarui Versi Aplikasi (Saat Ada Fitur Baru)
 
-**Q: Apakah data warga disimpan di mana?**
-> Data tersimpan di Google Spreadsheet Anda sendiri di Google Drive Koperasi. Penyedia layanan tidak dapat mengakses data pribadi warga.
+Ketika penyedia layanan merilis fitur baru atau perbaikan sistem, Anda **tidak perlu mengubah atau menyalin kode ulang**. Cukup lakukan 3 langkah mudah berikut (hanya 30 detik):
 
-**Q: Apa yang terjadi jika masa langganan habis?**
-> Aplikasi toko akan otomatis terkunci dengan pesan informasi. Warga tidak dapat berbelanja sampai langganan diperpanjang.
+1. Buka **Google Spreadsheet** Koperasi Anda ➔ **Ekstensi** ➔ **Apps Script**.
+2. Pada bilah menu kiri, klik nama library **`KopdesEngine`** (di bawah tulisan *Libraries*):
+   - Klik dropdown **Version (Versi)** ➔ pilih **nomor versi terbaru** yang diinfokan penyedia layanan.
+   - Klik tombol **Save (Simpan)**.
+3. Klik tombol **Deploy** di pojok kanan atas ➔ pilih **Manage deployments (Kelola deployment)**:
+   - Klik ikon **Pensil (Edit ✏️)** pada deployment yang sedang aktif.
+   - Pada baris **Version**, klik dropdown lalu pilih **"New version" (Versi baru)**.
+   - Klik tombol biru **Deploy**.
 
-**Q: Bagaimana cara memperbarui versi aplikasi?**
-> Penyedia layanan akan menginformasikan versi terbaru. Cukup ubah nomor versi di menu Libraries ➔ `KopdesEngine` ➔ pilih versi baru ➔ Buat deployment baru.
+> ✅ Selesai! Web App toko online Anda otomatis menggunakan fitur dan perbaikan terbaru.
+
+---
+
+## ❓ FAQ (Tanya Jawab)
+
+**Q: Kapan saya harus melakukan Deploy New Version?**
+> Hanya saat ada pembaruan versi library dari penyedia layanan. Menambah produk baru, mengubah stok, memproses pesanan, mengganti profil desa, atau perpanjangan lisensi **TIDAK PERLU** deploy ulang.
+
+**Q: Apakah data transaksi dan data warga disimpan di mana?**
+> Seluruh data tersimpan aman di Google Spreadsheet Anda sendiri di Google Drive Koperasi. Penyedia layanan tidak dapat mengakses data pribadi warga Anda.
+
+**Q: Apa yang terjadi jika masa langganan koperasi habis?**
+> Aplikasi toko akan otomatis terkunci dengan pesan informasi. Warga tidak dapat berbelanja sementara waktu sampai langganan diperpanjang melalui penyedia layanan.
 
 **Q: Apakah perlu server atau hosting berbayar?**
-> Tidak. Seluruh sistem berjalan di Google Apps Script & Google Sheets (infrastruktur Google) yang GRATIS.
+> Tidak. Seluruh sistem berjalan di Google Apps Script & Google Sheets (infrastruktur Google Workspace) yang gratis dan andal.
 
 ---
 
