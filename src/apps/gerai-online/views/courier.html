@@ -1282,17 +1282,18 @@
             }
 
             function logout() {
-                localStorage.removeItem('kopdes_user_id');
-                localStorage.removeItem('kopdes_courier_name');
-                localStorage.removeItem('kopdes_courier_cred');
-                Toast.show('Anda telah keluar dari akun kurir.', 'info');
-                document.getElementById('active-courier-name').textContent = 'Belum Login';
-                _activeOrders = [];
-                _completedOrders = [];
-                _renderActiveOrders();
-                _renderCompletedOrders();
+                try {
+                    localStorage.removeItem('kopdes_user_id');
+                    localStorage.removeItem('kopdes_courier_name');
+                    localStorage.removeItem('kopdes_courier_cred');
+                    localStorage.removeItem('kopdes_user');
+                    localStorage.removeItem('kopdes_admin_user');
+                    localStorage.removeItem('kopdes_active_user');
+                    sessionStorage.clear();
+                } catch(e) {}
+                Toast.show('Logout berhasil. Mengalihkan ke toko publik...', 'info');
                 setTimeout(function() {
-                    editCourierName();
+                    Navigation.goTo('index');
                 }, 400);
             }
 
