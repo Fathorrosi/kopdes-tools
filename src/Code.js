@@ -472,7 +472,32 @@ function uploadImage(fileData, userId) { // eslint-disable-line no-unused-vars
   var decoded = Utilities.base64Decode(base64Content);
   var blob = Utilities.newBlob(decoded, contentType, fileName);
 
-  // 1. Prioritas Cloud CDN (Catbox API) — Instan, Publik, Universal
+  // 1. Prioritas Google Drive (Native Google Workspace — Cepat, Aman, Tanpa Kuota Eksternal)
+  try {
+    var folderName = 'Kopdes_Assets';
+    var folders = DriveApp.getFoldersByName(folderName);
+    var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
+
+    var file = folder.createFile(blob);
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch(shareErr) { /* ignore */ }
+
+    var fileId = file.getId();
+    var publicUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+
+    return {
+      success: true,
+      url: publicUrl,
+      fileId: fileId,
+      storage: 'drive',
+      message: 'Foto berhasil disimpan ke Google Drive!'
+    };
+  } catch (driveErr) {
+    Logger.log('[DriveApp Error]: ' + driveErr.message);
+  }
+
+  // 2. Fallback Cloud CDN (Catbox API) jika DriveApp tidak diizinkan
   try {
     var catboxPayload = {
       'reqtype': 'fileupload',
@@ -494,36 +519,6 @@ function uploadImage(fileData, userId) { // eslint-disable-line no-unused-vars
     }
   } catch (cdnErr) {
     Logger.log('[Catbox CDN Error]: ' + cdnErr.message);
-  }
-
-  // 2. Prioritas Google Drive (jika diizinkan)
-  try {
-    var folderName = 'Kopdes_Assets';
-    var folders = DriveApp.getFoldersByName(folderName);
-    var folder;
-    if (folders.hasNext()) {
-      folder = folders.next();
-    } else {
-      folder = DriveApp.createFolder(folderName);
-    }
-
-    var file = folder.createFile(blob);
-    try {
-      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    } catch(shareErr) { /* ignore */ }
-
-    var fileId = file.getId();
-    var publicUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
-
-    return {
-      success: true,
-      url: publicUrl,
-      fileId: fileId,
-      storage: 'drive',
-      message: 'Foto berhasil disimpan ke Google Drive!'
-    };
-  } catch (driveErr) {
-    Logger.log('[DriveApp Error]: ' + driveErr.message);
   }
 
   // 3. Fallback jika storage eksternal gagal: kembalikan URL data atau link aman

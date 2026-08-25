@@ -629,23 +629,18 @@
                 <span class="modal-title"><i class="fas fa-id-badge" style="color:var(--c-accent);"></i> Akun Kurir Pengantar</span>
                 <button class="modal-close" onclick="CourierApp.closeNameModal()"><i class="fas fa-times"></i></button>
             </div>
-            
-            <!-- Quick Courier Account Selectors -->
-            <div style="margin-bottom:14px;">
-                <label class="form-label">Pilih Cepat Akun Kurir Terdaftar:</label>
-                <div id="quick-couriers-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
-                    <!-- populated from getCouriers -->
-                </div>
-            </div>
 
-            <div style="border-top:1px dashed var(--c-border);padding-top:12px;">
+            <div style="padding-top:4px;">
+                <div style="font-size:12.5px;color:var(--c-text-3);margin-bottom:14px;line-height:1.4;">
+                    Masukkan nomor WhatsApp / email akun kurir yang telah didaftarkan pengurus beserta PIN keamanan Anda.
+                </div>
                 <div class="form-group">
-                    <label class="form-label">Nomor HP / Email Akun Kurir:</label>
+                    <label class="form-label">Nomor HP / Email Akun Kurir: <span style="color:var(--c-danger);">*</span></label>
                     <input type="text" id="input-courier-cred" class="input" placeholder="081300000001 atau kurir1@kopdes.id" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">PIN Keamanan (Default: 1234):</label>
-                    <input type="password" id="input-courier-pin" class="input" placeholder="4 Digit PIN" maxlength="6" value="1234" />
+                    <label class="form-label">PIN Keamanan (4-6 Digit): <span style="color:var(--c-danger);">*</span></label>
+                    <input type="password" id="input-courier-pin" class="input" placeholder="Masukkan PIN Akun..." maxlength="6" />
                 </div>
                 <button type="button" class="btn btn-accent btn-full btn-lg" id="btn-login-courier" onclick="CourierApp.loginCourierAccount()">
                     <i class="fas fa-sign-in-alt"></i> Masuk Sebagai Kurir
@@ -843,39 +838,7 @@
             }
 
             function loadRegisteredCouriers() {
-                google.script.run
-                    .withSuccessHandler(function(list) {
-                        _registeredCouriers = list || [];
-                        try { localStorage.setItem('kopdes_courier_list_cache', JSON.stringify(_registeredCouriers)); } catch(e) {}
-                        _renderQuickCouriersList();
-                    })
-                    .getCouriers();
-            }
-
-            function _renderQuickCouriersList() {
-                var container = document.getElementById('quick-couriers-list');
-                if (!container) return;
-
-                if (!_registeredCouriers || _registeredCouriers.length === 0) {
-                    container.innerHTML = '<div style="font-size:12px;color:var(--c-text-3);">Belum ada kurir terdaftar.</div>';
-                    return;
-                }
-
-                container.innerHTML = _registeredCouriers.map(function(c) {
-                    return '<button type="button" class="btn btn-secondary btn-sm" style="justify-content:flex-start;text-align:left;padding:8px 10px;font-size:12.5px;" onclick="CourierApp.selectQuickCourier(\'' + escapeHtml(c.phone || c.email) + '\')">' +
-                        '<i class="fas fa-user-circle" style="color:var(--c-accent);font-size:16px;"></i>' +
-                        '<div style="flex:1;min-width:0;line-height:1.2;">' +
-                            '<strong>' + escapeHtml(c.name) + '</strong>' +
-                            '<div style="font-size:11px;color:var(--c-text-3);">' + escapeHtml(c.phone || c.email) + '</div>' +
-                        '</div>' +
-                        '<i class="fas fa-chevron-right" style="color:var(--c-text-4);font-size:11px;"></i>' +
-                    '</button>';
-                }).join('');
-            }
-
-            function selectQuickCourier(cred) {
-                document.getElementById('input-courier-cred').value = cred;
-                document.getElementById('input-courier-pin').focus();
+                // Background cache if needed
             }
 
             function getCourierName() {
@@ -886,7 +849,6 @@
                 var savedCred = localStorage.getItem('kopdes_courier_cred') || '';
                 document.getElementById('input-courier-cred').value = savedCred;
                 document.getElementById('courier-name-modal').classList.add('open');
-                _renderQuickCouriersList();
             }
 
             function closeNameModal() {
@@ -1165,7 +1127,7 @@
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var rawData = e.target.result;
-                    _compressPhoto(rawData, 640, 640, 0.85, function(compressed) {
+                    _compressPhoto(rawData, 480, 480, 0.70, function(compressed) {
                         _selectedPhotoDataUrl = compressed || rawData;
                         document.getElementById('courier-photo-preview-img').src = _selectedPhotoDataUrl;
                         document.getElementById('courier-photo-empty').style.display = 'none';

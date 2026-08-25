@@ -2714,11 +2714,22 @@
             }
 
             function logout() {
-                localStorage.removeItem('kopdes_user_id');
+                try {
+                    localStorage.removeItem('kopdes_user_id');
+                    localStorage.removeItem('kopdes_user');
+                    localStorage.removeItem('kopdes_admin_user');
+                    localStorage.removeItem('kopdes_active_user');
+                    sessionStorage.clear();
+                } catch(e) {}
                 _currentUser = null;
                 _renderUserState();
                 closeModal();
                 Toast.show('Anda telah keluar.', 'info');
+                try {
+                    var drawer = document.getElementById('order-history-drawer');
+                    if (drawer) drawer.classList.remove('open');
+                } catch(e) {}
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             function promptInstall() {
