@@ -3012,6 +3012,11 @@
                     return matchKw && matchSt;
                 });
 
+                // Sort: data terbaru di urutan teratas (terbaru -> terlama)
+                filtered.sort(function(a, b) {
+                    return (b.createdAt || '').localeCompare(a.createdAt || '');
+                });
+
                 _renderOrdersTable(filtered);
             }
 
