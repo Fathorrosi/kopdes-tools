@@ -185,19 +185,6 @@ function checkAppLicense()                           { return KopdesEngine.check
 
 > 🎉 **Selamat! Toko online Koperasi Desa Anda sudah LIVE dan siap digunakan!**
 
-### ⚡ Aktifkan Update Otomatis (Tanpa Deploy Ulang)
-
-Agar klien **tidak perlu deploy ulang** setiap kali penyedia merilis perbaikan, gunakan deployment versi **`HEAD`**:
-
-1. Buka **Deploy** ➔ **Manage deployments (Kelola deployment)**.
-2. Klik ikon **Pensil (Edit ✏️)** pada deployment aktif.
-3. Pada baris **Version**, pilih **`HEAD`** (bukan versi bernomor).
-4. Klik **Deploy**.
-
-> ✅ Dengan `HEAD`, setiap kali library `KopdesEngine` di-update, Web App klien **otomatis memakai versi terbaru** tanpa perlu deploy ulang.
->
-> ⚠️ **Catatan:** Deployment `HEAD` selalu mengikuti kode terbaru. Untuk produksi yang sangat sensitif, gunakan versi bernomor (perlu deploy ulang saat ganti versi).
-
 ---
 
 ## 🚀 Langkah 8 (Opsional): Pasang PWA di HP Warga
@@ -240,18 +227,9 @@ Setelah login sebagai Admin, buka **Panel Admin ➔ Tab Profil Desa & Koperasi**
 
 Ketika penyedia layanan merilis fitur baru atau perbaikan sistem, Anda **tidak perlu mengubah atau menyalin kode ulang**. Cukup lakukan langkah berikut:
 
-### Jika Deployment Memakai `HEAD` (Rekomendasi — Tanpa Deploy Ulang)
-1. Buka **Google Spreadsheet** Koperasi Anda ➔ **Ekstensi** ➔ **Apps Script**.
-2. Pada bilah menu kiri, klik nama library **`KopdesEngine`** (di bawah tulisan *Libraries*):
-   - Klik dropdown **Version (Versi)** ➔ pilih **nomor versi terbaru** yang diinfokan penyedia layanan.
-   - Klik tombol **Save (Simpan)**.
-
-> ✅ Selesai! Karena deployment memakai `HEAD`, Web App toko online Anda **otomatis** menggunakan fitur dan perbaikan terbaru **tanpa deploy ulang**.
-
-### Jika Deployment Memakai Versi Bernomor (Perlu Deploy Ulang)
 1. Buka **Google Spreadsheet** Koperasi Anda ➔ **Ekstensi** ➔ **Apps Script**.
 2. Pada bilah menu kiri, klik nama library **`KopdesEngine`**:
-   - Klik dropdown **Version (Versi)** ➔ pilih **nomor versi terbaru**.
+   - Klik dropdown **Version (Versi)** ➔ pilih **nomor versi terbaru** yang diinfokan penyedia layanan.
    - Klik tombol **Save (Simpan)**.
 3. Klik tombol **Deploy** di pojok kanan atas ➔ pilih **Manage deployments (Kelola deployment)**:
    - Klik ikon **Pensil (Edit ✏️)** pada deployment yang sedang aktif.
@@ -265,7 +243,7 @@ Ketika penyedia layanan merilis fitur baru atau perbaikan sistem, Anda **tidak p
 ## ❓ FAQ (Tanya Jawab)
 
 **Q: Kapan saya harus melakukan Deploy New Version?**
-> Jika deployment memakai **`HEAD`**, Anda **tidak perlu deploy ulang** — cukup ganti versi library. Jika deployment memakai versi bernomor, deploy ulang hanya saat ada pembaruan versi library dari penyedia layanan. Menambah produk baru, mengubah stok, memproses pesanan, mengganti profil desa, atau perpanjangan lisensi **TIDAK PERLU** deploy ulang.
+> Deploy ulang hanya diperlukan saat ada pembaruan versi library `KopdesEngine` dari penyedia layanan. Menambah produk baru, mengubah stok, memproses pesanan, mengganti profil desa, atau perpanjangan lisensi **TIDAK PERLU** deploy ulang.
 
 **Q: Apakah data transaksi dan data warga disimpan di mana?**
 > Seluruh data tersimpan aman di Google Spreadsheet Anda sendiri di Google Drive Koperasi. Penyedia layanan tidak dapat mengakses data pribadi warga Anda.

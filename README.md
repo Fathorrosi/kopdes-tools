@@ -57,7 +57,7 @@ Seluruh logika bisnis, database engine, dan tampilan UI disimpan aman sebagai **
 
 **Kebijakan Versi:**
 - Master & klien memakai **versi terbaru yang sama** (tidak perlu versi di bawahnya).
-- Untuk update **tanpa deploy ulang**, klien memakai deployment **`HEAD`** — setiap kali library di-update, Web App klien otomatis memakai versi terbaru.
+- Saat ada versi library baru, klien cukup **ganti versi library lalu deploy ulang** Web App-nya.
 - Semua HTML/CSS/JS di-serve dari library, sehingga perubahan tampilan & logika cukup di satu tempat.
 
 ---

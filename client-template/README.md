@@ -61,14 +61,19 @@ Dokumen ini adalah panduan bagi **Developer / Koperasi Desa** untuk memasang sis
 
 ---
 
-### ⚡ Opsional: Aktifkan Update Otomatis (Tanpa Deploy Ulang)
-Agar klien **tidak perlu deploy ulang** setiap kali penyedia merilis perbaikan, gunakan deployment versi **`HEAD`**:
+### 🔄 Cara Memperbarui Versi (Saat Ada Fitur Baru)
 
-1. Buka **Deploy** ➔ **Manage deployments (Kelola deployment)**.
-2. Klik ikon **Pensil (Edit ✏️)** pada deployment aktif.
-3. Pada baris **Version**, pilih **`HEAD`** (bukan versi bernomor).
-4. Klik **Deploy**.
+Ketika penyedia layanan merilis fitur baru atau perbaikan, lakukan 2 langkah berikut:
 
-> ✅ Dengan `HEAD`, setiap kali library `KopdesEngine` di-update, Web App klien **otomatis memakai versi terbaru** tanpa perlu deploy ulang.
+1. Buka **Google Spreadsheet** Koperasi Anda ➔ **Ekstensi** ➔ **Apps Script**.
+2. Pada bilah menu kiri, klik nama library **`KopdesEngine`**:
+   - Klik dropdown **Version (Versi)** ➔ pilih **nomor versi terbaru** yang diinfokan penyedia layanan.
+   - Klik tombol **Save (Simpan)**.
+3. Klik tombol **Deploy** di pojok kanan atas ➔ pilih **Manage deployments (Kelola deployment)**:
+   - Klik ikon **Pensil (Edit ✏️)** pada deployment yang sedang aktif.
+   - Pada baris **Version**, klik dropdown lalu pilih **"New version" (Versi baru)**.
+   - Klik tombol biru **Deploy**.
+
+> ✅ Selesai! Web App toko online Anda otomatis menggunakan fitur dan perbaikan terbaru.
 >
-> ⚠️ **Catatan:** Deployment `HEAD` selalu mengikuti kode terbaru. Untuk produksi yang sangat sensitif, gunakan versi bernomor (perlu deploy ulang saat ganti versi).
+> ⚠️ **Catatan:** Deploy ulang **wajib** dilakukan setiap kali ganti versi library. Ini adalah perilaku standar Google Apps Script — deployment Web App mengunci versi library yang aktif.
