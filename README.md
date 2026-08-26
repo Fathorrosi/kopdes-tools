@@ -3,7 +3,7 @@
 **Kopdes Gerai Online** adalah sistem aplikasi belanja digital (*Micro-SaaS*) berbasis cloud terpadu untuk Koperasi Desa (Kopdes), mengintegrasikan Storefront Pembeli, Panel Pengurus, dan Portal Kurir dalam **1 aplikasi terpadu**.
 
 * 🌐 **Aplikasi Web & PWA Master:** [https://kopdes-samatan.vercel.app](https://kopdes-samatan.vercel.app)
-* ⚡ **Core Library Script ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `141`)
+* ⚡ **Core Library Script ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `152`)
 * 📁 **Penyimpanan Media:** Google Drive (*Folder: Gerai Kopdes Assets*)
 * 🏢 **Arsitektur:** Managed SaaS Library — Anti-Bypass & Anti-Jual Ulang
 

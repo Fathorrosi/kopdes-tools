@@ -5,7 +5,7 @@
 
 * **Target Solusi:** Gerai Kopdes Online (PWA Mobile-First, Katalog Produk, Keranjang, Checkout COD, Manajemen Pesanan, Penyesuaian Stok Otomatis, dan Aplikasi Pengantaran Kurir Lapangan).
 * **Live Custom Domain (PWA Master):** `https://kopdes-samatan.vercel.app`
-* **Google Apps Script Core Library ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `119`)
+* **Google Apps Script Core Library ID:** `1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y` (Versi: `152`)
 * **Status:** ✅ Production Ready — Versi Terpadu 1 Aplikasi (Toko + Admin + Kurir + PWA APK + Managed Library Mode).
 
 ---

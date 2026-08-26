@@ -45,6 +45,8 @@ function getProductCategories() { return KopdesEngine.getProductCategories(); }
 function createProduct(data, uid) { return KopdesEngine.createProduct(data, uid); }
 function updateProduct(id, data, uid) { return KopdesEngine.updateProduct(id, data, uid); }
 function deleteProduct(id, uid) { return KopdesEngine.deleteProduct(id, uid); }
+function bulkUpdateProducts(uid, ids, data) { return KopdesEngine.bulkUpdateProducts(uid, ids, data); }
+function bulkDeleteProducts(uid, ids) { return KopdesEngine.bulkDeleteProducts(uid, ids); }
 function uploadImage(base64, name, type) { return KopdesEngine.uploadImage(base64, name, type); }
 function uploadImageFile(base64, name, type) { return KopdesEngine.uploadImageFile(base64, name, type); }
 
@@ -74,6 +76,18 @@ function loginUser(payload, pin) { return KopdesEngine.loginUser(payload, pin); 
 function registerUser(data) { return KopdesEngine.registerUser(data); }
 function getAllUsers(uid) { return KopdesEngine.getAllUsers(uid); }
 function getCouriers() { return KopdesEngine.getCouriers(); }
+function getAllCouriers(uid) { return KopdesEngine.getAllCouriers(uid); }
+function updateUserStatus(uid, targetId, isActive) { return KopdesEngine.updateUserStatus(uid, targetId, isActive); }
+function resetUserPin(uid, targetId, newPin) { return KopdesEngine.resetUserPin(uid, targetId, newPin); }
+function addCourier(uid, data) { return KopdesEngine.addCourier(uid, data); }
+function updateCourier(uid, targetId, data) { return KopdesEngine.updateCourier(uid, targetId, data); }
+
+// --- Dashboard & Reports ---
+function getDashboardStats(uid) { return KopdesEngine.getDashboardStats(uid); }
+function getOrdersReport(uid, dateFrom, dateTo, status) { return KopdesEngine.getOrdersReport(uid, dateFrom, dateTo, status); }
+
+// --- Seed & Sync ---
+function syncProductImages() { return KopdesEngine.syncProductImages(); }
 
 // --- License Check ---
 function checkLicense() { return KopdesEngine.checkLicense(); }
