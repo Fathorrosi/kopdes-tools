@@ -848,3 +848,32 @@ function _getKopdesName() {
 function _getHeroBgUrl() {
   return getVillageProfile().heroBgUrl;
 }
+
+// ============================================================
+//  SEED & DEMO DATA HELPERS
+// ============================================================
+
+/**
+ * Jalankan seed data contoh lengkap (produk, pengguna, dan pesanan)
+ * @param {Object} [config]
+ * @returns {Object}
+ */
+function seedData(config) { // eslint-disable-line no-unused-vars
+  if (config && config.spreadsheetId) {
+    Database.setSpreadsheetId(config.spreadsheetId);
+  }
+  _seedOrSyncProducts();
+  _seedOrSyncUsers();
+  _seedOrSyncOrders(true);
+  return { success: true, message: 'Seed data berhasil dijalankan!' };
+}
+
+/**
+ * Jalankan seed transaksi pesanan bervariasi (riwayat 35 hari untuk grafik analitik)
+ * @param {boolean} [force]
+ * @returns {Object}
+ */
+function seedOrders(force) { // eslint-disable-line no-unused-vars
+  _seedOrSyncOrders(force !== false);
+  return { success: true, message: 'Seed pesanan bervariasi berhasil dibuat!' };
+}

@@ -31,6 +31,12 @@ function seedUsers() {
   _seedOrSyncUsers();
 }
 
+// eslint-disable-next-line no-unused-vars
+function seedOrders(force) {
+  Logger.log('🛒 Memulai seed data transaksi pesanan sample bervariasi...');
+  _seedOrSyncOrders(force !== false);
+}
+
 /**
  * Seed & Sinkronisasi Akun Pengurus & 10 Anggota Koperasi
  */
@@ -560,9 +566,10 @@ function _seedOrSyncProducts() {
 }
 
 /**
- * Seed & Sinkronisasi Pesanan Sample untuk Uji Coba Alur Lengkap (Toko -> Admin -> Kurir)
+ * Seed & Sinkronisasi Pesanan Sample Bervariasi untuk Chart Laporan & Alur Toko
+ * Menyediakan riwayat transaksi 35 hari terakhir (Harian, Mingguan, Bulanan)
  */
-function _seedOrSyncOrders() {
+function _seedOrSyncOrders(force) {
   OrderController.setup();
 
   var existingOrders = [];
@@ -572,20 +579,476 @@ function _seedOrSyncOrders() {
     existingOrders = [];
   }
 
-  if (existingOrders && existingOrders.length > 0) {
-    Logger.log('📋 Pesanan sudah ada di sheet (' + existingOrders.length + ' pesanan). Melewati seed pesanan.');
+  if (!force && existingOrders && existingOrders.length >= 10) {
+    Logger.log('📋 Pesanan sudah ada di sheet (' + existingOrders.length + ' pesanan). Gunakan seedOrders(true) untuk menambah sample baru.');
     return;
   }
 
-  var nowIso = new Date().toISOString();
+  function _daysAgoIso(daysAgo, hour, minute) {
+    var d = new Date();
+    d.setDate(d.getDate() - daysAgo);
+    d.setHours(hour || 10, minute || 0, 0, 0);
+    return d.toISOString();
+  }
 
   var sampleOrders = [
-    // 1. Pesanan Sedang Diantar oleh Kurir Budi
+    // --- 4-5 Minggu Lalu ---
+    {
+      userId: 'usr-anggota-1',
+      customerName: 'Ahmad Fauzi',
+      customerPhone: '081200000001',
+      customerAddress: 'Dusun Mekarsari RT 01 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 1 },
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 }
+      ]),
+      total: 102000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(35, 9, 15),
+      completedAt: _daysAgoIso(35, 11, 30),
+      notes: 'Lunas tunai'
+    },
     {
       userId: 'usr-anggota-2',
       customerName: 'Dewi Lestari',
       customerPhone: '081200000002',
       customerAddress: 'Dusun Sukamaju RT 02 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 2 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 2 }
+      ]),
+      total: 89000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(32, 14, 20),
+      completedAt: _daysAgoIso(32, 16, 0),
+      notes: 'Selesai diantar'
+    },
+    {
+      userId: 'usr-anggota-3',
+      customerName: 'Bambang Prakoso',
+      customerPhone: '081200000003',
+      customerAddress: 'Dusun Karanganyar RT 03 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 3 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 1 }
+      ]),
+      total: 70500,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(30, 8, 45),
+      completedAt: _daysAgoIso(30, 10, 15),
+      notes: 'Pesanan untuk konsumsi pos ronda'
+    },
+    // --- 3-4 Minggu Lalu ---
+    {
+      userId: 'usr-anggota-4',
+      customerName: 'Sri Wahyuni',
+      customerPhone: '081200000004',
+      customerAddress: 'Dusun Mekarsari RT 01 / RW 03, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Pandan Wangi Organik 5kg', price: 72000, qty: 2 },
+        { name: 'Minyak Goreng SunCo 2L', price: 35000, qty: 1 }
+      ]),
+      total: 179000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(28, 11, 0),
+      completedAt: _daysAgoIso(28, 13, 30),
+      notes: 'Titip di warung depan'
+    },
+    {
+      userId: 'usr-anggota-5',
+      customerName: 'Eko Prasetyo',
+      customerPhone: '081200000005',
+      customerAddress: 'Dusun Sukamaju RT 04 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Indomie Goreng Spesial', price: 3000, qty: 10 },
+        { name: 'Teh Celup SariWangi 25s', price: 6500, qty: 2 }
+      ]),
+      total: 43000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(26, 15, 40),
+      completedAt: _daysAgoIso(26, 17, 10),
+      notes: 'Selesai'
+    },
+    {
+      userId: 'usr-anggota-6',
+      customerName: 'Nur Hidayah',
+      customerPhone: '081200000006',
+      customerAddress: 'Dusun Karangsari RT 02 / RW 03, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 },
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 1 },
+        { name: 'Tepung Terigu Segitiga Biru 1kg', price: 12500, qty: 2 }
+      ]),
+      total: 87000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(24, 10, 10),
+      completedAt: _daysAgoIso(24, 12, 0),
+      notes: 'Lunas COD'
+    },
+    {
+      userId: 'usr-anggota-7',
+      customerName: 'Hendra Gunawan',
+      customerPhone: '081200000007',
+      customerAddress: 'Dusun Mekarsari RT 03 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 1 },
+        { name: 'Kecap Manis Bango 550ml', price: 21500, qty: 1 },
+        { name: 'Garam Beryodium Cap Kapal 250gr', price: 3000, qty: 1 }
+      ]),
+      total: 92500,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(22, 13, 0),
+      completedAt: _daysAgoIso(22, 14, 45),
+      notes: 'Selesai'
+    },
+    // --- 2-3 Minggu Lalu ---
+    {
+      userId: 'usr-anggota-8',
+      customerName: 'Rina Marlina',
+      customerPhone: '081200000008',
+      customerAddress: 'Dusun Karanganyar RT 01 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 2 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 1 },
+        { name: 'Susu Kental Manis Frisian Flag 370gr', price: 12500, qty: 2 }
+      ]),
+      total: 77500,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(20, 9, 30),
+      completedAt: _daysAgoIso(20, 11, 15),
+      notes: 'Selesai diantar'
+    },
+    {
+      userId: 'usr-anggota-9',
+      customerName: 'Agus Supriyadi',
+      customerPhone: '081200000009',
+      customerAddress: 'Dusun Sukamaju RT 05 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 1 },
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 2 },
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 }
+      ]),
+      total: 158000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(19, 16, 0),
+      completedAt: _daysAgoIso(19, 17, 30),
+      notes: 'Lunas tunai'
+    },
+    {
+      userId: 'usr-anggota-10',
+      customerName: 'Wulandari',
+      customerPhone: '081200000010',
+      customerAddress: 'Dusun Karangsari RT 02 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Sabun Cuci Piring Sunlight 750ml', price: 14500, qty: 2 },
+        { name: 'Deterjen Rinso Molto 770gr', price: 19500, qty: 1 }
+      ]),
+      total: 48500,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(17, 10, 45),
+      completedAt: _daysAgoIso(17, 12, 10),
+      notes: 'Selesai'
+    },
+    {
+      userId: 'usr-anggota-1',
+      customerName: 'Ahmad Fauzi',
+      customerPhone: '081200000001',
+      customerAddress: 'Dusun Mekarsari RT 01 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Indomie Goreng Spesial', price: 3000, qty: 20 },
+        { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 2 }
+      ]),
+      total: 96000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(16, 14, 15),
+      completedAt: _daysAgoIso(16, 15, 50),
+      notes: 'Stok arisan keluarga'
+    },
+    {
+      userId: 'usr-anggota-2',
+      customerName: 'Dewi Lestari',
+      customerPhone: '081200000002',
+      customerAddress: 'Dusun Sukamaju RT 02 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Pandan Wangi Organik 5kg', price: 72000, qty: 1 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 2 }
+      ]),
+      total: 105000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(14, 8, 30),
+      completedAt: _daysAgoIso(14, 10, 20),
+      notes: 'Selesai'
+    },
+    {
+      userId: 'usr-anggota-3',
+      customerName: 'Bambang Prakoso',
+      customerPhone: '081200000003',
+      customerAddress: 'Dusun Karanganyar RT 03 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Minyak Goreng SunCo 2L', price: 35000, qty: 2 }
+      ]),
+      total: 70000,
+      status: 'cancelled',
+      paymentMethod: 'COD',
+      createdAt: _daysAgoIso(13, 11, 20),
+      notes: 'Pembeli membatalkan karena stok habis'
+    },
+    {
+      userId: 'usr-anggota-4',
+      customerName: 'Sri Wahyuni',
+      customerPhone: '081200000004',
+      customerAddress: 'Dusun Mekarsari RT 01 / RW 03, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 2 },
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 1 }
+      ]),
+      total: 96000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(12, 13, 40),
+      completedAt: _daysAgoIso(12, 15, 10),
+      notes: 'Lunas'
+    },
+    // --- 1-2 Minggu Lalu ---
+    {
+      userId: 'usr-anggota-5',
+      customerName: 'Eko Prasetyo',
+      customerPhone: '081200000005',
+      customerAddress: 'Dusun Sukamaju RT 04 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 2 },
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 },
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 2 }
+      ]),
+      total: 226000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(10, 9, 0),
+      completedAt: _daysAgoIso(10, 11, 30),
+      notes: 'Pesanan bulanan'
+    },
+    {
+      userId: 'usr-anggota-6',
+      customerName: 'Nur Hidayah',
+      customerPhone: '081200000006',
+      customerAddress: 'Dusun Karangsari RT 02 / RW 03, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 4 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 2 }
+      ]),
+      total: 105000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(9, 14, 50),
+      completedAt: _daysAgoIso(9, 16, 20),
+      notes: 'Selesai diantar'
+    },
+    {
+      userId: 'usr-anggota-7',
+      customerName: 'Hendra Gunawan',
+      customerPhone: '081200000007',
+      customerAddress: 'Dusun Mekarsari RT 03 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Tepung Terigu Segitiga Biru 1kg', price: 12500, qty: 3 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 2 },
+        { name: 'Mentega Blue Band 200gr', price: 9500, qty: 2 }
+      ]),
+      total: 89500,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(8, 10, 15),
+      completedAt: _daysAgoIso(8, 11, 45),
+      notes: 'Bahan kue'
+    },
+    {
+      userId: 'usr-anggota-8',
+      customerName: 'Rina Marlina',
+      customerPhone: '081200000008',
+      customerAddress: 'Dusun Karanganyar RT 01 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Pandan Wangi Organik 5kg', price: 72000, qty: 1 },
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 1 }
+      ]),
+      total: 100000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(7, 15, 30),
+      completedAt: _daysAgoIso(7, 17, 0),
+      notes: 'Lunas'
+    },
+    {
+      userId: 'usr-anggota-9',
+      customerName: 'Agus Supriyadi',
+      customerPhone: '081200000009',
+      customerAddress: 'Dusun Sukamaju RT 05 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Indomie Goreng Spesial', price: 3000, qty: 40 }
+      ]),
+      total: 120000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(6, 11, 10),
+      completedAt: _daysAgoIso(6, 13, 0),
+      notes: '1 Dus Indomie'
+    },
+    {
+      userId: 'usr-anggota-10',
+      customerName: 'Wulandari',
+      customerPhone: '081200000010',
+      customerAddress: 'Dusun Karangsari RT 02 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 },
+        { name: 'Kecap Manis Bango 550ml', price: 21500, qty: 2 },
+        { name: 'Garam Beryodium Cap Kapal 250gr', price: 3000, qty: 2 }
+      ]),
+      total: 83000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(5, 13, 20),
+      completedAt: _daysAgoIso(5, 15, 0),
+      notes: 'Selesai'
+    },
+    // --- 1-4 Hari Lalu ---
+    {
+      userId: 'usr-anggota-1',
+      customerName: 'Ahmad Fauzi',
+      customerPhone: '081200000001',
+      customerAddress: 'Dusun Mekarsari RT 01 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 1 },
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 },
+        { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 2 }
+      ]),
+      total: 138000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(4, 9, 45),
+      completedAt: _daysAgoIso(4, 11, 20),
+      notes: 'Lunas'
+    },
+    {
+      userId: 'usr-anggota-2',
+      customerName: 'Dewi Lestari',
+      customerPhone: '081200000002',
+      customerAddress: 'Dusun Sukamaju RT 02 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 3 },
+        { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 2 }
+      ]),
+      total: 117000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(3, 14, 0),
+      completedAt: _daysAgoIso(3, 15, 45),
+      notes: 'Selesai diantar'
+    },
+    {
+      userId: 'usr-anggota-3',
+      customerName: 'Bambang Prakoso',
+      customerPhone: '081200000003',
+      customerAddress: 'Dusun Karanganyar RT 03 / RW 02, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Pandan Wangi Organik 5kg', price: 72000, qty: 1 },
+        { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 }
+      ]),
+      total: 106000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(2, 10, 30),
+      completedAt: _daysAgoIso(2, 12, 15),
+      notes: 'Lunas COD'
+    },
+    {
+      userId: 'usr-anggota-4',
+      customerName: 'Sri Wahyuni',
+      customerPhone: '081200000004',
+      customerAddress: 'Dusun Mekarsari RT 01 / RW 03, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Sabun Mandi Lifebuoy 85gr', price: 4500, qty: 5 },
+        { name: 'Shampoo Sunsilk Black Shine 170ml', price: 22000, qty: 1 }
+      ]),
+      total: 44500,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(2, 16, 20),
+      completedAt: _daysAgoIso(2, 17, 30),
+      notes: 'Selesai'
+    },
+    {
+      userId: 'usr-anggota-5',
+      customerName: 'Eko Prasetyo',
+      customerPhone: '081200000005',
+      customerAddress: 'Dusun Sukamaju RT 04 / RW 01, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 1 },
+        { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 1 }
+      ]),
+      total: 96000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(1, 11, 0),
+      completedAt: _daysAgoIso(1, 12, 30),
+      notes: 'Selesai diantar'
+    },
+    {
+      userId: 'usr-anggota-6',
+      customerName: 'Nur Hidayah',
+      customerPhone: '081200000006',
+      customerAddress: 'Dusun Karangsari RT 02 / RW 03, Desa Makmur',
+      items: JSON.stringify([
+        { name: 'Indomie Goreng Spesial', price: 3000, qty: 10 },
+        { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 2 }
+      ]),
+      total: 66000,
+      status: 'completed',
+      paymentMethod: 'COD',
+      courierName: 'Kurir Budi',
+      createdAt: _daysAgoIso(1, 15, 15),
+      completedAt: _daysAgoIso(1, 16, 45),
+      notes: 'Lunas'
+    },
+    // --- Hari Ini (Aktif / Berjalan) ---
+    {
+      userId: 'usr-anggota-7',
+      customerName: 'Hendra Gunawan',
+      customerPhone: '081200000007',
+      customerAddress: 'Dusun Mekarsari RT 03 / RW 01, Desa Makmur',
       items: JSON.stringify([
         { name: 'Beras Rojo Lele Super 5kg', price: 68000, qty: 1 },
         { name: 'Minyak Goreng Bimoli 2L', price: 34000, qty: 1 }
@@ -594,14 +1057,14 @@ function _seedOrSyncOrders() {
       status: 'delivering',
       paymentMethod: 'COD',
       courierName: 'Kurir Budi',
-      notes: 'Rumah cat hijau pagar hitam dekat masjid'
+      createdAt: _daysAgoIso(0, 8, 30),
+      notes: 'Sedang diantar kurir'
     },
-    // 2. Pesanan Siap Disiapkan di Gerai
     {
-      userId: 'usr-anggota-1',
-      customerName: 'Ahmad Fauzi',
-      customerPhone: '081200000001',
-      customerAddress: 'Dusun Mekarsari RT 01 / RW 02, Desa Makmur',
+      userId: 'usr-anggota-8',
+      customerName: 'Rina Marlina',
+      customerPhone: '081200000008',
+      customerAddress: 'Dusun Karanganyar RT 01 / RW 02, Desa Makmur',
       items: JSON.stringify([
         { name: 'Gula Pasir Gulaku 1kg', price: 16500, qty: 2 },
         { name: 'Telur Ayam Ras Segar 1kg', price: 28000, qty: 1 }
@@ -609,32 +1072,30 @@ function _seedOrSyncOrders() {
       total: 61000,
       status: 'processing',
       paymentMethod: 'COD',
-      courierName: 'Kurir Budi',
-      notes: 'Tolong telur dipilihkan yang bagus'
+      courierName: 'Kurir Ahmad Fauzi',
+      createdAt: _daysAgoIso(0, 10, 15),
+      notes: 'Sedang disiapkan di gerai'
     },
-    // 3. Pesanan Selesai Hari Ini
     {
-      userId: 'usr-anggota-3',
-      customerName: 'Bambang Prakoso',
-      customerPhone: '081200000003',
-      customerAddress: 'Dusun Karanganyar RT 03 / RW 02, Desa Makmur',
+      userId: 'usr-anggota-9',
+      customerName: 'Agus Supriyadi',
+      customerPhone: '081200000009',
+      customerAddress: 'Dusun Sukamaju RT 05 / RW 02, Desa Makmur',
       items: JSON.stringify([
         { name: 'Kopi Bubuk Asli Desa 250gr', price: 18000, qty: 2 },
         { name: 'Tepung Terigu Segitiga Biru 1kg', price: 12500, qty: 1 }
       ]),
       total: 48500,
-      status: 'completed',
+      status: 'pending',
       paymentMethod: 'COD',
-      courierName: 'Kurir Budi',
-      completedAt: nowIso,
-      notes: 'Selesai diantar dan uang tunai diterima'
+      createdAt: _daysAgoIso(0, 13, 0),
+      notes: 'Pesanan baru menunggu validasi admin'
     },
-    // 4. Pesanan Baru Masuk
     {
-      userId: 'usr-anggota-4',
-      customerName: 'Sri Wahyuni',
-      customerPhone: '081200000004',
-      customerAddress: 'Dusun Mekarsari RT 01 / RW 03, Desa Makmur',
+      userId: 'usr-anggota-10',
+      customerName: 'Wulandari',
+      customerPhone: '081200000010',
+      customerAddress: 'Dusun Karangsari RT 02 / RW 02, Desa Makmur',
       items: JSON.stringify([
         { name: 'Indomie Goreng Spesial', price: 3000, qty: 5 },
         { name: 'Teh Celup SariWangi 25s', price: 6500, qty: 1 }
@@ -642,14 +1103,15 @@ function _seedOrSyncOrders() {
       total: 21500,
       status: 'pending',
       paymentMethod: 'COD',
-      notes: 'Mohon segera dikirim ya'
+      createdAt: _daysAgoIso(0, 14, 30),
+      notes: 'Mohon segera diproses'
     }
   ];
 
   sampleOrders.forEach(function(o) {
     try {
       Database.insert('orders', o);
-      Logger.log('  ✓ Pesanan sample dibuat untuk: ' + o.customerName + ' (' + o.status + ')');
+      Logger.log('  ✓ Pesanan sample dibuat: ' + o.customerName + ' (' + o.status + ' - Rp ' + o.total + ')');
     } catch(e) {
       Logger.log('  ✗ Gagal buat pesanan sample: ' + e.message);
     }
