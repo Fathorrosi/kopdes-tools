@@ -2802,9 +2802,9 @@
 
                 var filtered = _products.filter(function(p) {
                     var matchKw = !kw ||
-                        (p.name || '').toLowerCase().includes(kw) ||
-                        (p.category || '').toLowerCase().includes(kw) ||
-                        (p.description || '').toLowerCase().includes(kw) ||
+                        String(p.name || '').toLowerCase().includes(kw) ||
+                        String(p.category || '').toLowerCase().includes(kw) ||
+                        String(p.description || '').toLowerCase().includes(kw) ||
                         String(p.id || '').toLowerCase().includes(kw);
                     var matchCat = !_catFilter || p.category === _catFilter;
                     var matchPromo = !_promoFilter || (_promoFilter === 'promo_only' ? p.isPromo : !p.isPromo);
@@ -2998,14 +2998,14 @@
                     } else if (typeof o.items === 'string') {
                         try { items = JSON.parse(o.items); } catch (e) { items = []; }
                     }
-                    var itemNames = items.map(function(i) { return (i.name || '').toLowerCase(); }).join(' ');
+                    var itemNames = items.map(function(i) { return String(i.name || '').toLowerCase(); }).join(' ');
 
                     var matchKw = !kw ||
-                        (o.customerName || '').toLowerCase().includes(kw) ||
-                        (o.customerPhone || '').toLowerCase().includes(kw) ||
+                        String(o.customerName || '').toLowerCase().includes(kw) ||
+                        String(o.customerPhone || '').toLowerCase().includes(kw) ||
                         String(o.id || '').toLowerCase().includes(kw) ||
-                        (o.deliveryAddress || '').toLowerCase().includes(kw) ||
-                        (o.courierName || '').toLowerCase().includes(kw) ||
+                        String(o.deliveryAddress || '').toLowerCase().includes(kw) ||
+                        String(o.courierName || '').toLowerCase().includes(kw) ||
                         itemNames.includes(kw);
 
                     var matchSt = !_orderStatusFilter || o.status === _orderStatusFilter;
@@ -3355,7 +3355,9 @@
                     var courierOptionsHtml = '<option value="">-- Pilih Kurir dari Akun Terdaftar --</option>';
                     var isKnownCourier = false;
                     _couriers.forEach(function(c) {
-                        var selected = (order.courierName && (order.courierName.toLowerCase() === c.name.toLowerCase() || c.name.toLowerCase().indexOf(order.courierName.toLowerCase()) !== -1)) ? 'selected' : '';
+                        var cName = String(c.name || '').toLowerCase();
+                        var oCourier = String(order.courierName || '').toLowerCase();
+                        var selected = (oCourier && (oCourier === cName || cName.indexOf(oCourier) !== -1)) ? 'selected' : '';
                         if (selected) isKnownCourier = true;
                         courierOptionsHtml += '<option value="' + escapeHtml(c.name) + '" ' + selected + '>🛵 ' + escapeHtml(c.name) + (c.phone ? ' (' + c.phone + ')' : '') + '</option>';
                     });
@@ -4268,10 +4270,11 @@
                     if (status === 'active' && (u.isActive === false || String(u.isActive).toLowerCase() === 'false')) return false;
                     if (status === 'suspended' && u.isActive !== false && String(u.isActive).toLowerCase() !== 'false') return false;
                     if (q) {
-                        var name = (u.name || '').toLowerCase();
-                        var phone = (u.phone || '').toLowerCase();
-                        var email = (u.email || '').toLowerCase();
-                        if (name.indexOf(q) === -1 && phone.indexOf(q) === -1 && email.indexOf(q) === -1) return false;
+                        var name = String(u.name || '').toLowerCase();
+                        var phone = String(u.phone || '').toLowerCase();
+                        var email = String(u.email || '').toLowerCase();
+                        var addr = String(u.address || '').toLowerCase();
+                        if (name.indexOf(q) === -1 && phone.indexOf(q) === -1 && email.indexOf(q) === -1 && addr.indexOf(q) === -1) return false;
                     }
                     return true;
                 });
@@ -4409,10 +4412,10 @@
                 var q = (document.getElementById('courier-search').value || '').trim().toLowerCase();
                 var filtered = _all.filter(function(c) {
                     if (!q) return true;
-                    var name = (c.name || '').toLowerCase();
-                    var phone = (c.phone || '').toLowerCase();
-                    var email = (c.email || '').toLowerCase();
-                    var addr = (c.address || '').toLowerCase();
+                    var name = String(c.name || '').toLowerCase();
+                    var phone = String(c.phone || '').toLowerCase();
+                    var email = String(c.email || '').toLowerCase();
+                    var addr = String(c.address || '').toLowerCase();
                     return name.includes(q) || phone.includes(q) || email.includes(q) || addr.includes(q);
                 });
                 _render(filtered);
@@ -4778,11 +4781,11 @@
                 var kw = (document.getElementById('report-search').value || '').trim().toLowerCase();
                 var filtered = _data.filter(function(o) {
                     if (!kw) return true;
-                    var name = (o.customerName || '').toLowerCase();
-                    var phone = (o.customerPhone || '').toLowerCase();
+                    var name = String(o.customerName || '').toLowerCase();
+                    var phone = String(o.customerPhone || '').toLowerCase();
                     var id = String(o.id || '').toLowerCase();
-                    var courier = (o.courierName || '').toLowerCase();
-                    var itemNames = (o.items || []).map(function(i) { return (i.name || '').toLowerCase(); }).join(' ');
+                    var courier = String(o.courierName || '').toLowerCase();
+                    var itemNames = (o.items || []).map(function(i) { return String(i.name || '').toLowerCase(); }).join(' ');
 
                     return name.includes(kw) || phone.includes(kw) || id.includes(kw) || courier.includes(kw) || itemNames.includes(kw);
                 });
