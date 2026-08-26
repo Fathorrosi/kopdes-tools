@@ -84,6 +84,7 @@ var OrderController = (function () {
         effectivePrice = Number(p.promoPrice);
       }
       item.price = effectivePrice;
+      if (p.unit) item.unit = p.unit;
     });
 
     // Hitung total & kurangi stok

@@ -891,10 +891,13 @@
                 </div>
                 <button class="sidebar-close-btn" onclick="Sidebar.close()"><i class="fas fa-times"></i></button>
             </div>
-
             <div class="sidebar-nav">
                 <div class="sidebar-section-label">Menu Utama</div>
-                <button class="sidebar-item active" id="nav-products" onclick="Admin.showTab('products')">
+                <button class="sidebar-item active" id="nav-dashboard" onclick="Admin.showTab('dashboard')">
+                    <span class="sidebar-item-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    Dashboard
+                </button>
+                <button class="sidebar-item" id="nav-products" onclick="Admin.showTab('products')">
                     <span class="sidebar-item-icon"><i class="fas fa-box"></i></span>
                     Produk
                 </button>
@@ -903,19 +906,31 @@
                     Pesanan
                     <span class="sidebar-item-badge" id="pending-badge" style="display:none;">0</span>
                 </button>
+                <button class="sidebar-item" id="nav-members" onclick="Admin.showTab('members')">
+                    <span class="sidebar-item-icon"><i class="fas fa-users"></i></span>
+                    Anggota
+                </button>
+                <button class="sidebar-item" id="nav-couriers" onclick="Admin.showTab('couriers')">
+                    <span class="sidebar-item-icon"><i class="fas fa-motorcycle"></i></span>
+                    Kurir
+                </button>
+                <button class="sidebar-item" id="nav-reports" onclick="Admin.showTab('reports')">
+                    <span class="sidebar-item-icon"><i class="fas fa-chart-bar"></i></span>
+                    Laporan
+                </button>
                 <button class="sidebar-item" id="nav-village" onclick="Admin.showTab('village')">
                     <span class="sidebar-item-icon"><i class="fas fa-landmark"></i></span>
-                    Profil Desa & Koperasi
+                    Profil Desa &amp; Koperasi
                 </button>
 
-                <div class="sidebar-section-label" style="margin-top:16px;">Sistem & Sinkronisasi</div>
+                <div class="sidebar-section-label" style="margin-top:16px;">Sistem &amp; Sinkronisasi</div>
                 <button class="sidebar-item" onclick="Admin.syncImages()">
                     <span class="sidebar-item-icon"><i class="fas fa-images"></i></span>
-                    Sync Gambar & Promo
+                    Sync Gambar &amp; Promo
                 </button>
                 <button class="sidebar-item" onclick="Admin.seedAllData()">
                     <span class="sidebar-item-icon"><i class="fas fa-users-cog"></i></span>
-                    Seed Akun & Produk
+                    Seed Akun &amp; Produk
                 </button>
                 <button class="sidebar-item" onclick="Admin.checkLicense()">
                     <span class="sidebar-item-icon"><i class="fas fa-key"></i></span>
@@ -1035,9 +1050,20 @@
                         </div>
                     </div>
 
+                    <!-- Bulk Actions Toolbar -->
+                    <div id="bulk-product-bar" style="display:none;align-items:center;justify-content:space-between;background:var(--c-surface-2);padding:10px 16px;border-radius:var(--r-md);margin-bottom:12px;border:1px solid var(--c-primary-light);">
+                        <div style="font-size:13px;font-weight:700;"><span id="bulk-selected-count">0</span> produk terpilih</div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-secondary btn-sm" onclick="Admin.bulkUpdateActive(true)"><i class="fas fa-check-circle" style="color:var(--c-success);"></i> Aktifkan</button>
+                            <button class="btn btn-secondary btn-sm" onclick="Admin.bulkUpdateActive(false)"><i class="fas fa-ban" style="color:var(--c-warning);"></i> Nonaktifkan</button>
+                            <button class="btn btn-danger btn-sm" onclick="Admin.bulkDelete()"><i class="fas fa-trash"></i> Hapus Terpilih</button>
+                        </div>
+                    </div>
+
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th style="width:36px;text-align:center;"><input type="checkbox" id="prod-select-all" onchange="Admin.toggleSelectAllProducts(this.checked)" style="width:16px;height:16px;cursor:pointer;" /></th>
                                 <th style="width:50px;">Foto</th>
                                 <th class="sortable" onclick="Admin.sortBy('name')">Produk <span id="sort-icon-name">▲</span></th>
                                 <th class="sortable" onclick="Admin.sortBy('category')">Kategori <span id="sort-icon-category"></span></th>
@@ -1049,7 +1075,7 @@
                             </tr>
                         </thead>
                         <tbody id="products-tbody">
-                            <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--c-text-3);"><i class="fas fa-spinner fa-spin"></i> Memuat produk...</td></tr>
+                            <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--c-text-3);"><i class="fas fa-spinner fa-spin"></i> Memuat produk...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1268,6 +1294,183 @@
             </div>
 
         </main>
+
+        <!-- ============================================================
+             TAB: DASHBOARD
+             ============================================================ -->
+        <div id="tab-dashboard" class="tab-pane" style="display:none;">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2><i class="fas fa-tachometer-alt" style="color:var(--c-primary);"></i> Dashboard</h2>
+                    <p>Ringkasan performa gerai koperasi hari ini.</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="Dashboard.load()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </div>
+
+            <div class="stats-row" id="dashboard-stats-row">
+                <div class="stat-card"><div class="stat-icon" style="background:linear-gradient(135deg,#16a34a,#15803d);"><i class="fas fa-wallet"></i></div><div class="stat-info"><div class="stat-label">Omzet Bulan Ini</div><div class="stat-value success" id="ds-revenue-month">—</div></div></div>
+                <div class="stat-card"><div class="stat-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><div class="stat-label">Pesanan Hari Ini</div><div class="stat-value primary" id="ds-orders-today">—</div></div></div>
+                <div class="stat-card"><div class="stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-label">Menunggu Validasi</div><div class="stat-value warning" id="ds-pending">—</div></div></div>
+                <div class="stat-card"><div class="stat-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);"><i class="fas fa-truck"></i></div><div class="stat-info"><div class="stat-label">Sedang Dikirim</div><div class="stat-value" style="color:#7c3aed;" id="ds-delivering">—</div></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><div class="stat-label">Anggota Aktif</div><div class="stat-value primary" id="ds-members">—</div></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-box-open"></i></div><div class="stat-info"><div class="stat-label">Produk Aktif</div><div class="stat-value primary" id="ds-products">—</div></div></div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:0;">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-receipt" style="color:var(--c-primary);"></i> Pesanan Terbaru</h3>
+                        <div id="ds-recent-orders"><div style="text-align:center;padding:24px;color:var(--c-text-4);"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div>
+                        <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%;" onclick="Admin.showTab('orders')"><i class="fas fa-arrow-right"></i> Lihat Semua Pesanan</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-exclamation-triangle" style="color:var(--c-warning);"></i> Produk Stok Menipis</h3>
+                        <div id="ds-low-stock"><div style="text-align:center;padding:24px;color:var(--c-text-4);"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div>
+                        <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%;" onclick="Admin.showTab('products')"><i class="fas fa-arrow-right"></i> Kelola Produk</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             TAB: ANGGOTA / MEMBERS
+             ============================================================ -->
+        <div id="tab-members" class="tab-pane" style="display:none;">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2><i class="fas fa-users" style="color:var(--c-primary);"></i> Manajemen Anggota</h2>
+                    <p>Kelola akun anggota, pengurus, dan status akun koperasi.</p>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <div class="table-filter-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="search" id="member-search" class="input" placeholder="Cari nama, HP, atau email..." oninput="Members.filter()" />
+                    </div>
+                    <select id="member-role-filter" class="input" style="min-width:150px;font-size:13px;" onchange="Members.filter()">
+                        <option value="">Semua Role</option>
+                        <option value="anggota">👤 Anggota</option>
+                        <option value="pengurus">👔 Pengurus</option>
+                        <option value="kurir">🚚 Kurir</option>
+                        <option value="admin">⭐ Admin</option>
+                    </select>
+                    <select id="member-status-filter" class="input" style="min-width:140px;font-size:13px;" onchange="Members.filter()">
+                        <option value="">Semua Status</option>
+                        <option value="active">✅ Aktif</option>
+                        <option value="suspended">🚫 Suspend</option>
+                    </select>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nama &amp; Kontak</th>
+                            <th>Role</th>
+                            <th>Alamat</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members-tbody">
+                        <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--c-text-3);"><i class="fas fa-spinner fa-spin"></i> Memuat anggota...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             TAB: KURIR
+             ============================================================ -->
+        <div id="tab-couriers" class="tab-pane" style="display:none;">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2><i class="fas fa-motorcycle" style="color:var(--c-primary);"></i> Manajemen Kurir</h2>
+                    <p>Kelola akun kurir pengantaran gerai koperasi.</p>
+                </div>
+                <button class="btn btn-primary" onclick="CourierMgmt.openAdd()"><i class="fas fa-plus"></i> Tambah Kurir</button>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Kurir</th>
+                            <th>Nomor HP</th>
+                            <th>Email</th>
+                            <th>Alamat</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="couriers-tbody">
+                        <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--c-text-3);"><i class="fas fa-spinner fa-spin"></i> Memuat kurir...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             TAB: LAPORAN
+             ============================================================ -->
+        <div id="tab-reports" class="tab-pane" style="display:none;">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2><i class="fas fa-chart-bar" style="color:var(--c-primary);"></i> Laporan &amp; Rekap Pesanan</h2>
+                    <p>Filter dan export rekap pesanan dalam format CSV.</p>
+                </div>
+                <button class="btn btn-primary" onclick="Reports.exportCsv()" id="report-export-btn" style="display:none;"><i class="fas fa-file-csv"></i> Export CSV</button>
+            </div>
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-body">
+                    <div class="form-row" style="align-items:flex-end;gap:12px;">
+                        <div class="form-group" style="flex:1;min-width:140px;">
+                            <label class="form-label"><i class="fas fa-calendar" style="color:var(--c-primary);"></i> Dari Tanggal</label>
+                            <input type="date" id="report-date-from" class="input" />
+                        </div>
+                        <div class="form-group" style="flex:1;min-width:140px;">
+                            <label class="form-label"><i class="fas fa-calendar" style="color:var(--c-primary);"></i> Sampai Tanggal</label>
+                            <input type="date" id="report-date-to" class="input" />
+                        </div>
+                        <div class="form-group" style="flex:1;min-width:140px;">
+                            <label class="form-label">Filter Status</label>
+                            <select id="report-status-filter" class="input" style="font-size:13px;">
+                                <option value="">Semua Status</option>
+                                <option value="pending">⏳ Menunggu Validasi</option>
+                                <option value="processing">📦 Disiapkan</option>
+                                <option value="delivering">🚚 Dikirim</option>
+                                <option value="completed">✅ Selesai</option>
+                                <option value="cancelled">❌ Dibatalkan</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:0 0 auto;">
+                            <label class="form-label">&nbsp;</label>
+                            <button class="btn btn-primary" onclick="Reports.load()"><i class="fas fa-search"></i> Tampilkan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID &amp; Tanggal</th>
+                            <th>Pemesan</th>
+                            <th>Item</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Kurir</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reports-tbody">
+                        <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--c-text-4);">Pilih rentang tanggal dan klik "Tampilkan" untuk melihat rekap pesanan.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="report-summary" style="display:none;margin-top:16px;padding:14px 18px;background:var(--c-surface);border-radius:var(--r-md);border:1px solid var(--c-border);font-size:13px;">
+            </div>
+        </div>
+
     </div>
 
     <!-- ===== PRODUCT EDIT/CREATE MODAL ===== -->
@@ -1302,6 +1505,21 @@
                         <div class="form-group">
                             <label class="form-label">Stok <span style="color:var(--c-danger);">*</span></label>
                             <input type="number" id="pm-stock" class="input" min="0" value="10" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Satuan</label>
+                            <input type="text" id="pm-unit" class="input" placeholder="kg, pcs, ikat..." list="unit-suggestions" />
+                            <datalist id="unit-suggestions">
+                                <option value="kg"></option>
+                                <option value="gram"></option>
+                                <option value="pcs"></option>
+                                <option value="liter"></option>
+                                <option value="ikat"></option>
+                                <option value="bungkus"></option>
+                                <option value="lusin"></option>
+                                <option value="dus"></option>
+                                <option value="porsi"></option>
+                            </datalist>
                         </div>
                     </div>
 
@@ -1929,6 +2147,8 @@
             var _promoFilter = '';
             var _orderStatusFilter = '';
 
+            var _lastPendingCount = -1;
+
             function init() {
                 var uid = localStorage.getItem('kopdes_user_id') || '';
                 if (uid && uid.indexOf('google-') === 0) {
@@ -1940,21 +2160,13 @@
                     } catch(e) {}
                     uid = '';
                 }
-                
+
                 // Validasi Hak Akses Admin / Pengurus
                 google.script.run
                     .withSuccessHandler(function(res) {
                         if (res && res.user) {
-                            // Jika Kurir membuka Admin Panel, langsung arahkan ke Mode Kurir!
-                            if (res.user.role === 'kurir') {
-                                Navigation.goTo('courier');
-                                return;
-                            }
-                            // Jika Anggota biasa membuka Admin Panel, tolak dan arahkan ke Toko
-                            if (res.user.role === 'anggota' && !res.user.isAdmin && !res.user.isStaff) {
-                                Navigation.goTo('index');
-                                return;
-                            }
+                            if (res.user.role === 'kurir') { Navigation.goTo('courier'); return; }
+                            if (res.user.role === 'anggota' && !res.user.isAdmin && !res.user.isStaff) { Navigation.goTo('index'); return; }
 
                             var userEmail = document.getElementById('user-email');
                             var userRole = document.getElementById('user-role-label');
@@ -1964,18 +2176,43 @@
                             if (userAvatar) userAvatar.textContent = (res.user.name || 'A').charAt(0).toUpperCase();
                         }
 
+                        // Default ke tab Dashboard
+                        showTab('dashboard');
                         loadProducts();
                         loadOrders();
                         loadCouriers();
                         VillageProfile.load();
+                        _startOrderPolling();
                     })
                     .withFailureHandler(function() {
+                        showTab('dashboard');
                         loadProducts();
                         loadOrders();
                         loadCouriers();
                         VillageProfile.load();
+                        _startOrderPolling();
                     })
                     .getAuthStatus(uid);
+            }
+
+            function _startOrderPolling() {
+                setInterval(function() {
+                    google.script.run
+                        .withSuccessHandler(function(orders) {
+                            var pending = (orders || []).filter(function(o) { return o.status === 'pending'; }).length;
+                            var badge = document.getElementById('pending-badge');
+                            if (badge) {
+                                badge.textContent = pending;
+                                badge.style.display = pending > 0 ? 'inline-flex' : 'none';
+                            }
+                            if (_lastPendingCount >= 0 && pending > _lastPendingCount) {
+                                var diff = pending - _lastPendingCount;
+                                Toast.show('🔔 Ada ' + diff + ' pesanan baru menunggu validasi!', 'warning');
+                            }
+                            _lastPendingCount = pending;
+                        })
+                        .getAllOrders(localStorage.getItem('kopdes_user_id') || '');
+                }, 30000);
             }
 
             function loadCouriers() {
@@ -1990,20 +2227,27 @@
                 return _products.find(function(p) { return String(p.id) === String(id); });
             }
 
+            var _tabsLoaded = {};
+
             function showTab(tab) {
                 Sidebar.close();
-                ['products', 'orders', 'village'].forEach(function(t) {
+                ['dashboard', 'products', 'orders', 'members', 'couriers', 'reports', 'village'].forEach(function(t) {
                     var el = document.getElementById('tab-' + t);
                     var nav = document.getElementById('nav-' + t);
-                    if (el) el.classList.remove('active');
+                    if (el) { el.classList.remove('active'); el.style.display = 'none'; }
                     if (nav) nav.classList.remove('active');
                 });
 
                 var targetTab = document.getElementById('tab-' + tab);
                 var targetNav = document.getElementById('nav-' + tab);
-                if (targetTab) targetTab.classList.add('active');
+                if (targetTab) { targetTab.classList.add('active'); targetTab.style.display = 'block'; }
                 if (targetNav) targetNav.classList.add('active');
 
+                // Lazy-load data saat pertama kali tab dibuka
+                if (tab === 'dashboard') { Dashboard.load(); }
+                if (tab === 'members' && !_tabsLoaded.members) { _tabsLoaded.members = true; Members.load(); }
+                if (tab === 'couriers' && !_tabsLoaded.couriers) { _tabsLoaded.couriers = true; CourierMgmt.load(); }
+                if (tab === 'reports') { /* Reports loaded on user action */ }
                 if (tab === 'village') VillageProfile.load();
             }
 
@@ -2131,29 +2375,36 @@
 
             function _renderProductsTable(list) {
                 var tbody = document.getElementById('products-tbody');
+                var selectAllCb = document.getElementById('prod-select-all');
+                if (selectAllCb) selectAllCb.checked = false;
+                _updateBulkBar();
+
                 if (!list.length) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--c-text-3);">Tidak ada produk yang cocok.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--c-text-3);">Tidak ada produk yang cocok.</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = list.map(function(p) {
                     var isPromo = Boolean(p.isPromo) && Number(p.promoPrice) > 0 && Number(p.promoPrice) < Number(p.price);
                     var priceDisplay = '';
+                    var unitText = p.unit ? '<div style="font-size:11px;color:var(--c-text-3);font-weight:normal;">/' + escapeHtml(p.unit) + '</div>' : '';
 
                     if (isPromo) {
                         var disc = Math.round(((p.price - p.promoPrice) / p.price) * 100);
-                        priceDisplay = '<div><strong style="color:var(--c-primary);">Rp ' + Number(p.promoPrice).toLocaleString('id-ID') + '</strong> <span class="badge badge-danger">-' + disc + '%</span><br><del style="font-size:11.5px;color:var(--c-text-4);">Rp ' + Number(p.price).toLocaleString('id-ID') + '</del></div>';
+                        priceDisplay = '<div><strong style="color:var(--c-primary);">Rp ' + Number(p.promoPrice).toLocaleString('id-ID') + '</strong> <span class="badge badge-danger">-' + disc + '%</span><br><del style="font-size:11.5px;color:var(--c-text-4);">Rp ' + Number(p.price).toLocaleString('id-ID') + '</del>' + unitText + '</div>';
                     } else {
-                        priceDisplay = '<strong>Rp ' + Number(p.price).toLocaleString('id-ID') + '</strong>';
+                        priceDisplay = '<div><strong>Rp ' + Number(p.price).toLocaleString('id-ID') + '</strong>' + unitText + '</div>';
                     }
 
                     var stock = Number(p.stock);
-                    var stockBadge = stock <= 0 ? '<span class="badge badge-danger">Habis</span>' : (stock <= 5 ? '<span class="badge badge-warning">' + stock + '</span>' : '<span>' + stock + '</span>');
+                    var unitStock = p.unit ? ' <span style="font-size:11px;color:var(--c-text-3);">' + escapeHtml(p.unit) + '</span>' : '';
+                    var stockBadge = stock <= 0 ? '<span class="badge badge-danger">Habis</span>' : (stock <= 5 ? '<span class="badge badge-warning">' + stock + unitStock + '</span>' : '<span>' + stock + unitStock + '</span>');
                     var activeBadge = String(p.isActive).toLowerCase() === 'true' ? '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-danger">Nonaktif</span>';
 
                     var imgHtml = p.imageUrl ? '<img src="' + escapeHtml(p.imageUrl) + '" alt="" onerror="this.src=\'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&fit=crop\'" />' : '<i class="fas fa-box" style="color:var(--c-text-4);"></i>';
 
                     return '<tr>' +
+                        '<td style="text-align:center;"><input type="checkbox" class="prod-row-cb" value="' + escapeHtml(p.id) + '" onchange="Admin.onProductCheckChange()" style="width:16px;height:16px;cursor:pointer;" /></td>' +
                         '<td><div class="table-thumb-wrap">' + imgHtml + '</div></td>' +
                         '<td><strong>' + escapeHtml(p.name) + '</strong>' + (isPromo ? ' <span class="badge badge-danger" style="font-size:10px;">PROMO</span>' : '') + '</td>' +
                         '<td>' + escapeHtml(p.category || '—') + '</td>' +
@@ -2167,6 +2418,76 @@
                         '</td>' +
                         '</tr>';
                 }).join('');
+            }
+
+            function toggleSelectAllProducts(checked) {
+                var cbs = document.querySelectorAll('.prod-row-cb');
+                cbs.forEach(function(cb) { cb.checked = checked; });
+                _updateBulkBar();
+            }
+
+            function onProductCheckChange() {
+                var cbs = document.querySelectorAll('.prod-row-cb');
+                var allChecked = cbs.length > 0 && Array.from(cbs).every(function(cb) { return cb.checked; });
+                var selectAllCb = document.getElementById('prod-select-all');
+                if (selectAllCb) selectAllCb.checked = allChecked;
+                _updateBulkBar();
+            }
+
+            function _getSelectedProductIds() {
+                var cbs = document.querySelectorAll('.prod-row-cb:checked');
+                return Array.from(cbs).map(function(cb) { return cb.value; });
+            }
+
+            function _updateBulkBar() {
+                var selected = _getSelectedProductIds();
+                var bar = document.getElementById('bulk-product-bar');
+                var countEl = document.getElementById('bulk-selected-count');
+                if (bar && countEl) {
+                    countEl.textContent = selected.length;
+                    bar.style.display = selected.length > 0 ? 'flex' : 'none';
+                }
+            }
+
+            function bulkUpdateActive(isActive) {
+                var ids = _getSelectedProductIds();
+                if (!ids.length) return;
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                Toast.show('Memperbarui ' + ids.length + ' produk...', 'info');
+                google.script.run
+                    .withSuccessHandler(function() {
+                        Toast.show(ids.length + ' produk berhasil ' + (isActive ? 'diaktifkan' : 'dinonaktifkan') + '!', 'success');
+                        loadProducts();
+                    })
+                    .withFailureHandler(function(e) {
+                        Toast.show('Gagal: ' + e.message, 'error');
+                    })
+                    .bulkUpdateProducts(uid, ids, { isActive: isActive });
+            }
+
+            function bulkDelete() {
+                var ids = _getSelectedProductIds();
+                if (!ids.length) return;
+                ConfirmModal.open({
+                    title: 'Hapus ' + ids.length + ' Produk Terpilih',
+                    message: 'Apakah Anda yakin ingin menghapus ' + ids.length + ' produk yang dipilih secara permanen?',
+                    icon: 'fa-trash-alt',
+                    confirmText: 'Ya, Hapus Semua',
+                    btnClass: 'btn-danger',
+                    onConfirm: function() {
+                        var uid = localStorage.getItem('kopdes_user_id') || '';
+                        Toast.show('Menghapus ' + ids.length + ' produk...', 'info');
+                        google.script.run
+                            .withSuccessHandler(function() {
+                                Toast.show(ids.length + ' produk berhasil dihapus!', 'success');
+                                loadProducts();
+                            })
+                            .withFailureHandler(function(e) {
+                                Toast.show('Gagal: ' + e.message, 'error');
+                            })
+                            .bulkDeleteProducts(uid, ids);
+                    }
+                });
             }
 
             function deleteProduct(id, name) {
@@ -3034,7 +3355,11 @@
                 onCourierSelectChange: onCourierSelectChange,
                 syncImages: syncImages,
                 seedAllData: seedAllData,
-                checkLicense: checkLicense
+                checkLicense: checkLicense,
+                toggleSelectAllProducts: toggleSelectAllProducts,
+                onProductCheckChange: onProductCheckChange,
+                bulkUpdateActive: bulkUpdateActive,
+                bulkDelete: bulkDelete
             };
         })();
 
@@ -3087,6 +3412,7 @@
                 document.getElementById('pm-price').value = p.price || '';
                 document.getElementById('pm-stock').value = p.stock !== undefined ? p.stock : 10;
                 document.getElementById('pm-sold').value = p.soldCount || 0;
+                document.getElementById('pm-unit').value = p.unit || '';
                 document.getElementById('pm-img').value = p.imageUrl || '';
                 document.getElementById('pm-desc').value = p.description || '';
                 document.getElementById('pm-active').checked = String(p.isActive).toLowerCase() !== 'false';
@@ -3222,6 +3548,7 @@
                 var stock = Number(document.getElementById('pm-stock').value);
                 var category = document.getElementById('pm-category').value.trim();
                 var soldCount = Number(document.getElementById('pm-sold').value) || 0;
+                var unit = document.getElementById('pm-unit').value.trim();
                 var imageUrl = document.getElementById('pm-img').value.trim();
                 var description = document.getElementById('pm-desc').value.trim();
                 var isActive = document.getElementById('pm-active').checked;
@@ -3252,7 +3579,8 @@
                     description: description,
                     isActive: isActive,
                     isPromo: isPromo,
-                    promoPrice: isPromo ? promoPrice : 0
+                    promoPrice: isPromo ? promoPrice : 0,
+                    unit: unit
                 };
 
                 var uid = localStorage.getItem('kopdes_user_id') || '';
@@ -3304,6 +3632,437 @@
         })();
 
         // ============================================================
+        //  DASHBOARD MODULE
+        // ============================================================
+        var Dashboard = (function() {
+            function load() {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                document.getElementById('ds-revenue-month').textContent = '⏳';
+                document.getElementById('ds-orders-today').textContent = '⏳';
+                document.getElementById('ds-pending').textContent = '⏳';
+                document.getElementById('ds-delivering').textContent = '⏳';
+                document.getElementById('ds-members').textContent = '⏳';
+                document.getElementById('ds-products').textContent = '⏳';
+
+                google.script.run
+                    .withSuccessHandler(function(s) {
+                        document.getElementById('ds-revenue-month').textContent = 'Rp ' + Number(s.revenueThisMonth || 0).toLocaleString('id-ID');
+                        document.getElementById('ds-orders-today').textContent = s.ordersToday || 0;
+                        document.getElementById('ds-pending').textContent = s.pendingCount || 0;
+                        document.getElementById('ds-delivering').textContent = s.deliveringCount || 0;
+                        document.getElementById('ds-members').textContent = s.activeMembers || 0;
+                        document.getElementById('ds-products').textContent = s.activeProducts || 0;
+
+                        // Recent orders
+                        var ro = document.getElementById('ds-recent-orders');
+                        if (!s.recentOrders || !s.recentOrders.length) {
+                            ro.innerHTML = '<div style="text-align:center;padding:20px;color:var(--c-text-4);">Belum ada pesanan.</div>';
+                        } else {
+                            var html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+                            s.recentOrders.forEach(function(o) {
+                                var statusColor = { pending:'#f59e0b', processing:'#2563eb', delivering:'#8b5cf6', completed:'#16a34a', cancelled:'#dc2626' }[o.status] || '#64748b';
+                                var dt = o.createdAt ? o.createdAt.slice(0, 16).replace('T', ' ') : '—';
+                                html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--c-surface-2);border-radius:var(--r-sm);font-size:12.5px;">' +
+                                    '<div><div style="font-weight:700;">' + escapeHtml(o.customerName || '—') + '</div><div style="color:var(--c-text-4);font-size:11px;">' + dt + '</div></div>' +
+                                    '<div style="text-align:right;"><div style="font-weight:700;">Rp ' + Number(o.total || 0).toLocaleString('id-ID') + '</div><span style="font-size:11px;font-weight:700;color:' + statusColor + ';">' + o.status + '</span></div>' +
+                                '</div>';
+                            });
+                            html += '</div>';
+                            ro.innerHTML = html;
+                        }
+
+                        // Low stock
+                        var ls = document.getElementById('ds-low-stock');
+                        if (!s.lowStockList || !s.lowStockList.length) {
+                            ls.innerHTML = '<div style="text-align:center;padding:20px;color:var(--c-text-4);">✅ Semua stok aman!</div>';
+                        } else {
+                            var lhtml = '<div style="display:flex;flex-direction:column;gap:6px;">';
+                            s.lowStockList.forEach(function(p) {
+                                var color = Number(p.stock) === 0 ? '#dc2626' : '#f59e0b';
+                                lhtml += '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--c-surface-2);border-radius:var(--r-sm);font-size:12.5px;">' +
+                                    '<div style="font-weight:600;">' + escapeHtml(p.name || '—') + '</div>' +
+                                    '<span style="font-weight:800;color:' + color + ';">' + (Number(p.stock) === 0 ? 'HABIS' : 'Stok: ' + p.stock) + '</span>' +
+                                '</div>';
+                            });
+                            lhtml += '</div>';
+                            ls.innerHTML = lhtml;
+                        }
+                    })
+                    .withFailureHandler(function(e) {
+                        Toast.show('Gagal memuat dashboard: ' + (e.message || e), 'error');
+                    })
+                    .getDashboardStats(uid);
+            }
+            return { load: load };
+        })();
+
+        // ============================================================
+        //  MEMBERS MODULE
+        // ============================================================
+        var Members = (function() {
+            var _all = [];
+            var _current = null;
+
+            var ROLE_LABEL = { admin: '⭐ Admin', pengurus: '👔 Pengurus', kurir: '🚚 Kurir', anggota: '👤 Anggota' };
+
+            function load() {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                var tbody = document.getElementById('members-tbody');
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--c-text-3);"><i class="fas fa-spinner fa-spin"></i> Memuat anggota...</td></tr>';
+                google.script.run
+                    .withSuccessHandler(function(list) {
+                        _all = list || [];
+                        filter();
+                    })
+                    .withFailureHandler(function(e) {
+                        Toast.show('Gagal memuat anggota: ' + (e.message || e), 'error');
+                    })
+                    .getAllUsers(uid);
+            }
+
+            function filter() {
+                var q = (document.getElementById('member-search').value || '').trim().toLowerCase();
+                var role = document.getElementById('member-role-filter').value;
+                var status = document.getElementById('member-status-filter').value;
+
+                var filtered = _all.filter(function(u) {
+                    if (role && u.role !== role) return false;
+                    if (status === 'active' && (u.isActive === false || String(u.isActive).toLowerCase() === 'false')) return false;
+                    if (status === 'suspended' && u.isActive !== false && String(u.isActive).toLowerCase() !== 'false') return false;
+                    if (q) {
+                        var name = (u.name || '').toLowerCase();
+                        var phone = (u.phone || '').toLowerCase();
+                        var email = (u.email || '').toLowerCase();
+                        if (name.indexOf(q) === -1 && phone.indexOf(q) === -1 && email.indexOf(q) === -1) return false;
+                    }
+                    return true;
+                });
+
+                var tbody = document.getElementById('members-tbody');
+                if (!filtered.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--c-text-4);">Tidak ada anggota ditemukan.</td></tr>';
+                    return;
+                }
+
+                var html = '';
+                filtered.forEach(function(u) {
+                    var isActive = u.isActive !== false && String(u.isActive).toLowerCase() !== 'false';
+                    var statusBadge = isActive
+                        ? '<span class="badge badge-success" style="font-size:11px;">✅ Aktif</span>'
+                        : '<span class="badge badge-danger" style="font-size:11px;">🚫 Suspend</span>';
+                    html += '<tr>' +
+                        '<td><div style="font-weight:700;font-size:13px;">' + escapeHtml(u.name || '—') + '</div><div style="font-size:11.5px;color:var(--c-text-3);">' + escapeHtml(u.phone || u.email || '') + '</div></td>' +
+                        '<td><span style="font-size:12px;">' + (ROLE_LABEL[u.role] || u.role) + '</span></td>' +
+                        '<td style="font-size:12px;color:var(--c-text-3);">' + escapeHtml(u.address || '—') + '</td>' +
+                        '<td>' + statusBadge + '</td>' +
+                        '<td style="text-align:right;white-space:nowrap;">' +
+                            '<button class="btn btn-ghost btn-sm" onclick="Members.openDetail(\'' + escapeHtml(String(u.id)) + '\')" style="color:var(--c-primary);"><i class="fas fa-eye"></i></button>' +
+                        '</td>' +
+                    '</tr>';
+                });
+                tbody.innerHTML = html;
+            }
+
+            function openDetail(id) {
+                _current = _all.find(function(u) { return String(u.id) === String(id); });
+                if (!_current) return;
+                var isActive = _current.isActive !== false && String(_current.isActive).toLowerCase() !== 'false';
+                document.getElementById('mm-avatar').textContent = (_current.name || 'U').charAt(0).toUpperCase();
+                document.getElementById('mm-name').textContent = _current.name || '—';
+                document.getElementById('mm-role-label').textContent = ROLE_LABEL[_current.role] || _current.role;
+                document.getElementById('mm-phone').textContent = _current.phone || '—';
+                document.getElementById('mm-email').textContent = _current.email || '—';
+                document.getElementById('mm-address').textContent = _current.address || '—';
+                document.getElementById('mm-status').innerHTML = isActive
+                    ? '<span class="badge badge-success">✅ Aktif</span>'
+                    : '<span class="badge badge-danger">🚫 Suspend</span>';
+                document.getElementById('mm-new-pin').value = '';
+                document.getElementById('mm-confirm-pin').value = '';
+                var btn = document.getElementById('mm-suspend-btn');
+                if (btn) {
+                    btn.innerHTML = isActive ? '<i class="fas fa-ban"></i> Suspend Akun' : '<i class="fas fa-check-circle"></i> Aktifkan Akun';
+                    btn.className = isActive ? 'btn btn-danger' : 'btn btn-success';
+                }
+                document.getElementById('member-modal-backdrop').style.display = 'flex';
+            }
+
+            function closeModal() {
+                document.getElementById('member-modal-backdrop').style.display = 'none';
+                _current = null;
+            }
+
+            function toggleStatus() {
+                if (!_current) return;
+                var isActive = _current.isActive !== false && String(_current.isActive).toLowerCase() !== 'false';
+                var newStatus = !isActive;
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                var btn = document.getElementById('mm-suspend-btn');
+                btn.disabled = true;
+                google.script.run
+                    .withSuccessHandler(function(res) {
+                        btn.disabled = false;
+                        Toast.show(res.message || 'Status diperbarui.', 'success');
+                        closeModal();
+                        load();
+                    })
+                    .withFailureHandler(function(e) {
+                        btn.disabled = false;
+                        Toast.show('Gagal: ' + (e.message || e), 'error');
+                    })
+                    .updateUserStatus(uid, String(_current.id), newStatus);
+            }
+
+            function resetPin() {
+                if (!_current) return;
+                var newPin = document.getElementById('mm-new-pin').value.trim();
+                var confirmPin = document.getElementById('mm-confirm-pin').value.trim();
+                if (!newPin || newPin.length < 4) { Toast.show('PIN baru minimal 4 karakter.', 'warning'); return; }
+                if (newPin !== confirmPin) { Toast.show('PIN baru dan konfirmasi tidak cocok.', 'warning'); return; }
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                google.script.run
+                    .withSuccessHandler(function(res) {
+                        Toast.show('PIN anggota berhasil direset!', 'success');
+                        document.getElementById('mm-new-pin').value = '';
+                        document.getElementById('mm-confirm-pin').value = '';
+                    })
+                    .withFailureHandler(function(e) {
+                        Toast.show('Gagal reset PIN: ' + (e.message || e), 'error');
+                    })
+                    .resetUserPin(uid, String(_current.id), newPin);
+            }
+
+            return { load: load, filter: filter, openDetail: openDetail, closeModal: closeModal, toggleStatus: toggleStatus, resetPin: resetPin };
+        })();
+
+        // ============================================================
+        //  COURIER MANAGEMENT MODULE
+        // ============================================================
+        var CourierMgmt = (function() {
+            var _all = [];
+            var _editId = null;
+
+            function load() {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                var tbody = document.getElementById('couriers-tbody');
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--c-text-3);"><i class="fas fa-spinner fa-spin"></i> Memuat kurir...</td></tr>';
+                google.script.run
+                    .withSuccessHandler(function(list) {
+                        _all = list || [];
+                        _render();
+                    })
+                    .withFailureHandler(function(e) {
+                        Toast.show('Gagal memuat kurir: ' + (e.message || e), 'error');
+                    })
+                    .getAllCouriers(uid);
+            }
+
+            function _render() {
+                var tbody = document.getElementById('couriers-tbody');
+                if (!_all.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--c-text-4);">Belum ada kurir terdaftar.</td></tr>';
+                    return;
+                }
+                var html = '';
+                _all.forEach(function(c) {
+                    var isActive = c.isActive !== false && String(c.isActive).toLowerCase() !== 'false';
+                    html += '<tr>' +
+                        '<td><div style="font-weight:700;">' + escapeHtml(c.name || '—') + '</div></td>' +
+                        '<td style="font-size:12.5px;">' + escapeHtml(c.phone || '—') + '</td>' +
+                        '<td style="font-size:12.5px;color:var(--c-text-3);">' + escapeHtml(c.email || '—') + '</td>' +
+                        '<td style="font-size:12px;color:var(--c-text-3);">' + escapeHtml(c.address || '—') + '</td>' +
+                        '<td>' + (isActive ? '<span class="badge badge-success" style="font-size:11px;">✅ Aktif</span>' : '<span class="badge badge-danger" style="font-size:11px;">🚫 Nonaktif</span>') + '</td>' +
+                        '<td style="text-align:right;white-space:nowrap;">' +
+                            '<button class="btn btn-ghost btn-sm" onclick="CourierMgmt.openEdit(\'' + escapeHtml(String(c.id)) + '\')" style="color:var(--c-primary);margin-right:4px;"><i class="fas fa-edit"></i></button>' +
+                            '<button class="btn btn-ghost btn-sm" onclick="CourierMgmt.toggleActive(\'' + escapeHtml(String(c.id)) + '\',' + (!isActive) + ')" style="color:' + (isActive ? 'var(--c-danger)' : 'var(--c-success)') + ';"><i class="fas fa-' + (isActive ? 'ban' : 'check-circle') + '"></i></button>' +
+                        '</td>' +
+                    '</tr>';
+                });
+                tbody.innerHTML = html;
+            }
+
+            function openAdd() {
+                _editId = null;
+                document.getElementById('courier-modal-title').innerHTML = '<i class="fas fa-motorcycle" style="color:var(--c-primary);"></i> Tambah Kurir Baru';
+                document.getElementById('courier-form').reset();
+                document.getElementById('cm-id').value = '';
+                document.getElementById('cm-active-row').style.display = 'none';
+                document.getElementById('cm-pin').required = true;
+                document.getElementById('cm-phone').required = true;
+                document.getElementById('courier-modal-backdrop').style.display = 'flex';
+            }
+
+            function openEdit(id) {
+                var c = _all.find(function(x) { return String(x.id) === String(id); });
+                if (!c) return;
+                _editId = id;
+                document.getElementById('courier-modal-title').innerHTML = '<i class="fas fa-edit" style="color:var(--c-primary);"></i> Edit Kurir';
+                document.getElementById('cm-id').value = id;
+                document.getElementById('cm-name').value = c.name || '';
+                document.getElementById('cm-phone').value = c.phone || '';
+                document.getElementById('cm-email').value = c.email || '';
+                document.getElementById('cm-pin').value = '';
+                document.getElementById('cm-pin').required = false;
+                document.getElementById('cm-address').value = c.address || '';
+                document.getElementById('cm-active').checked = c.isActive !== false;
+                document.getElementById('cm-active-row').style.display = 'block';
+                document.getElementById('courier-modal-backdrop').style.display = 'flex';
+            }
+
+            function closeModal() {
+                document.getElementById('courier-modal-backdrop').style.display = 'none';
+                _editId = null;
+            }
+
+            function save() {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                var data = {
+                    name: document.getElementById('cm-name').value.trim(),
+                    phone: document.getElementById('cm-phone').value.trim(),
+                    email: document.getElementById('cm-email').value.trim(),
+                    pin: document.getElementById('cm-pin').value.trim(),
+                    address: document.getElementById('cm-address').value.trim()
+                };
+                var btn = document.getElementById('cm-save-btn');
+                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+                if (_editId) {
+                    data.isActive = document.getElementById('cm-active').checked;
+                    google.script.run
+                        .withSuccessHandler(function(res) {
+                            btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Simpan';
+                            Toast.show(res.message || 'Kurir diperbarui!', 'success');
+                            closeModal(); load();
+                        })
+                        .withFailureHandler(function(e) {
+                            btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Simpan';
+                            Toast.show('Gagal: ' + (e.message || e), 'error');
+                        })
+                        .updateCourier(uid, _editId, data);
+                } else {
+                    google.script.run
+                        .withSuccessHandler(function(res) {
+                            btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Simpan';
+                            Toast.show(res.message || 'Kurir ditambahkan!', 'success');
+                            closeModal(); load();
+                        })
+                        .withFailureHandler(function(e) {
+                            btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Simpan';
+                            Toast.show('Gagal: ' + (e.message || e), 'error');
+                        })
+                        .addCourier(uid, data);
+                }
+            }
+
+            function toggleActive(id, newStatus) {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                google.script.run
+                    .withSuccessHandler(function() {
+                        Toast.show(newStatus ? 'Kurir diaktifkan.' : 'Kurir dinonaktifkan.', 'success');
+                        load();
+                    })
+                    .withFailureHandler(function(e) { Toast.show('Gagal: ' + (e.message || e), 'error'); })
+                    .updateCourier(uid, id, { isActive: newStatus });
+            }
+
+            return { load: load, openAdd: openAdd, openEdit: openEdit, closeModal: closeModal, save: save, toggleActive: toggleActive };
+        })();
+
+        // ============================================================
+        //  REPORTS MODULE
+        // ============================================================
+        var Reports = (function() {
+            var _data = [];
+
+            var STATUS_LABEL = { pending: '⏳ Menunggu', processing: '📦 Disiapkan', delivering: '🚚 Dikirim', completed: '✅ Selesai', cancelled: '❌ Dibatalkan' };
+
+            function load() {
+                var uid = localStorage.getItem('kopdes_user_id') || '';
+                var dateFrom = document.getElementById('report-date-from').value;
+                var dateTo = document.getElementById('report-date-to').value;
+                var status = document.getElementById('report-status-filter').value;
+                var tbody = document.getElementById('reports-tbody');
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;"><i class="fas fa-spinner fa-spin"></i> Memuat laporan...</td></tr>';
+                document.getElementById('report-export-btn').style.display = 'none';
+                document.getElementById('report-summary').style.display = 'none';
+
+                google.script.run
+                    .withSuccessHandler(function(orders) {
+                        _data = orders || [];
+                        _render();
+                    })
+                    .withFailureHandler(function(e) {
+                        Toast.show('Gagal memuat laporan: ' + (e.message || e), 'error');
+                    })
+                    .getOrdersReport(uid, dateFrom || null, dateTo || null, status || null);
+            }
+
+            function _render() {
+                var tbody = document.getElementById('reports-tbody');
+                if (!_data.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--c-text-4);">Tidak ada pesanan dalam rentang tanggal tersebut.</td></tr>';
+                    document.getElementById('report-export-btn').style.display = 'none';
+                    return;
+                }
+
+                var totalRev = 0;
+                var html = '';
+                _data.forEach(function(o) {
+                    var total = Number(o.total || 0);
+                    if (o.status === 'completed') totalRev += total;
+                    var itemNames = (o.items || []).map(function(i) { return escapeHtml(i.name || '?') + ' x' + (i.qty || 1); }).join(', ');
+                    var dt = o.createdAt ? o.createdAt.slice(0, 16).replace('T', ' ') : '—';
+                    html += '<tr>' +
+                        '<td style="font-size:12px;"><div style="font-weight:700;">#' + escapeHtml(String(o.id || '—').slice(-6)) + '</div><div style="color:var(--c-text-4);">' + dt + '</div></td>' +
+                        '<td style="font-size:12.5px;"><div style="font-weight:600;">' + escapeHtml(o.customerName || '—') + '</div><div style="color:var(--c-text-4);font-size:11px;">' + escapeHtml(o.customerPhone || '') + '</div></td>' +
+                        '<td style="font-size:12px;max-width:180px;white-space:normal;">' + itemNames + '</td>' +
+                        '<td style="font-weight:700;font-size:13px;white-space:nowrap;">Rp ' + total.toLocaleString('id-ID') + '</td>' +
+                        '<td style="font-size:12px;">' + (STATUS_LABEL[o.status] || o.status) + '</td>' +
+                        '<td style="font-size:12px;color:var(--c-text-3);">' + escapeHtml(o.courierName || '—') + '</td>' +
+                    '</tr>';
+                });
+                tbody.innerHTML = html;
+
+                // Summary bar
+                var summary = document.getElementById('report-summary');
+                summary.style.display = 'block';
+                summary.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:18px;">' +
+                    '<span>📋 Total Pesanan: <strong>' + _data.length + '</strong></span>' +
+                    '<span>✅ Selesai: <strong>' + _data.filter(function(o){return o.status==='completed';}).length + '</strong></span>' +
+                    '<span>❌ Dibatalkan: <strong>' + _data.filter(function(o){return o.status==='cancelled';}).length + '</strong></span>' +
+                    '<span>💰 Total Omzet Selesai: <strong>Rp ' + totalRev.toLocaleString('id-ID') + '</strong></span>' +
+                '</div>';
+
+                document.getElementById('report-export-btn').style.display = 'flex';
+            }
+
+            function exportCsv() {
+                if (!_data.length) { Toast.show('Tidak ada data untuk diekspor.', 'warning'); return; }
+
+                var header = ['ID', 'Tanggal', 'Nama Pemesan', 'HP', 'Alamat', 'Item', 'Total', 'Metode Bayar', 'Status', 'Kurir', 'Catatan'];
+                var rows = _data.map(function(o) {
+                    var items = (o.items || []).map(function(i) { return (i.name || '') + ' x' + (i.qty || 1); }).join(' | ');
+                    return [
+                        o.id || '', (o.createdAt || '').slice(0, 16), o.customerName || '', o.customerPhone || '',
+                        (o.deliveryAddress || '').replace(/"/g, '""'), '"' + items.replace(/"/g, '""') + '"',
+                        o.total || 0, o.paymentMethod || 'COD', o.status || '', o.courierName || '', (o.notes || '').replace(/"/g, '""')
+                    ].join(',');
+                });
+
+                var csv = header.join(',') + '\n' + rows.join('\n');
+                var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'laporan_pesanan_kopdes_' + new Date().toISOString().slice(0, 10) + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                Toast.show('File CSV berhasil diunduh!', 'success');
+            }
+
+            return { load: load, exportCsv: exportCsv };
+        })();
+
+        // ============================================================
         //  INIT
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -3326,5 +4085,97 @@
             });
         });
     </script>
+
+    <!-- ===== MEMBER DETAIL MODAL ===== -->
+    <div class="modal-backdrop" id="member-modal-backdrop" onclick="if(event.target===this)Members.closeModal()" style="display:none;">
+        <div class="modal" style="max-width:480px;">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fas fa-user" style="color:var(--c-primary);"></i> Detail Anggota</span>
+                <button class="modal-close" onclick="Members.closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="member-modal-body" style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+                <div style="display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--c-border);">
+                    <div style="width:52px;height:52px;border-radius:50%;background:var(--c-primary-gradient);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0;" id="mm-avatar">A</div>
+                    <div>
+                        <div style="font-weight:800;font-size:16px;" id="mm-name">—</div>
+                        <div style="font-size:12px;color:var(--c-text-3);" id="mm-role-label">—</div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
+                    <div><div style="color:var(--c-text-4);font-size:11px;margin-bottom:2px;">Nomor HP</div><div id="mm-phone" style="font-weight:600;">—</div></div>
+                    <div><div style="color:var(--c-text-4);font-size:11px;margin-bottom:2px;">Email</div><div id="mm-email" style="font-weight:600;word-break:break-all;">—</div></div>
+                    <div><div style="color:var(--c-text-4);font-size:11px;margin-bottom:2px;">Alamat</div><div id="mm-address" style="font-weight:600;">—</div></div>
+                    <div><div style="color:var(--c-text-4);font-size:11px;margin-bottom:2px;">Status</div><div id="mm-status">—</div></div>
+                </div>
+                <!-- Reset PIN Section -->
+                <div style="background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);padding:14px;">
+                    <div style="font-weight:700;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fas fa-key" style="color:var(--c-warning);"></i> Reset PIN Anggota</div>
+                    <div class="form-row" style="gap:8px;align-items:flex-end;">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" style="font-size:12px;">PIN Baru</label>
+                            <input type="password" id="mm-new-pin" class="input" placeholder="Min. 4 karakter" maxlength="8" />
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" style="font-size:12px;">Konfirmasi PIN</label>
+                            <input type="password" id="mm-confirm-pin" class="input" placeholder="Ulangi PIN" maxlength="8" />
+                        </div>
+                        <button class="btn btn-warning btn-sm" style="flex:0 0 auto;margin-bottom:0;" onclick="Members.resetPin()"><i class="fas fa-key"></i> Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" style="flex:1;" onclick="Members.closeModal()">Tutup</button>
+                <button class="btn btn-danger" style="flex:1;" id="mm-suspend-btn" onclick="Members.toggleStatus()"><i class="fas fa-ban"></i> Suspend Akun</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== COURIER ADD/EDIT MODAL ===== -->
+    <div class="modal-backdrop" id="courier-modal-backdrop" onclick="if(event.target===this)CourierMgmt.closeModal()" style="display:none;">
+        <div class="modal" style="max-width:440px;">
+            <div class="modal-header">
+                <span class="modal-title" id="courier-modal-title"><i class="fas fa-motorcycle" style="color:var(--c-primary);"></i> Tambah Kurir</span>
+                <button class="modal-close" onclick="CourierMgmt.closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="courier-form" onsubmit="event.preventDefault(); CourierMgmt.save();" style="display:flex;flex-direction:column;gap:14px;padding:20px;">
+                <input type="hidden" id="cm-id" />
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap Kurir <span style="color:var(--c-danger);">*</span></label>
+                    <input type="text" id="cm-name" class="input" placeholder="Contoh: Budi Santoso" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nomor HP <span style="color:var(--c-danger);">*</span></label>
+                        <input type="tel" id="cm-phone" class="input" placeholder="081300000001" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="cm-email" class="input" placeholder="kurir@kopdes.id" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">PIN <span style="color:var(--c-danger);">*</span></label>
+                        <input type="password" id="cm-pin" class="input" placeholder="Min. 4 digit" maxlength="8" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Alamat / Pos</label>
+                        <input type="text" id="cm-address" class="input" placeholder="Pos Kurir Gerai" />
+                    </div>
+                </div>
+                <div id="cm-active-row" style="display:none;">
+                    <label style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;cursor:pointer;">
+                        <input type="checkbox" id="cm-active" checked style="width:16px;height:16px;" />
+                        Kurir Aktif
+                    </label>
+                </div>
+                <div class="modal-footer" style="padding:0;border:none;">
+                    <button type="button" class="btn btn-secondary" style="flex:1;" onclick="CourierMgmt.closeModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary" style="flex:2;" id="cm-save-btn"><i class="fas fa-check"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>

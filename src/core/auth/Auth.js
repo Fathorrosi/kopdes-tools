@@ -571,12 +571,127 @@ var Auth = (function () {
           id: String(u.id || ''),
           name: u.name,
           phone: u.phone || '',
-          email: u.email || ''
+          email: u.email || '',
+          isActive: u.isActive !== false && u.isActive !== 'false'
         });
       }
     });
 
     return uniqueCouriers;
+  }
+
+  /**
+   * Mengambil semua kurir (aktif & nonaktif) untuk manajemen admin
+   * @returns {Object[]}
+   */
+  function getAllCouriers() {
+    setup();
+    var allDbUsers = Database.getAll(TABLE);
+    return allDbUsers.filter(function(u) {
+      return u.role === 'kurir';
+    }).map(function(u) {
+      return {
+        id: String(u.id || ''),
+        name: u.name,
+        phone: u.phone || '',
+        email: u.email || '',
+        address: u.address || '',
+        isActive: u.isActive !== false && String(u.isActive).toLowerCase() !== 'false',
+        createdAt: u.createdAt || ''
+      };
+    });
+  }
+
+  /**
+   * Suspend atau aktifkan akun user / anggota / kurir (Admin only)
+   * @param {string} targetId - ID user yang akan diubah statusnya
+   * @param {boolean} isActive - true = aktifkan, false = suspend
+   * @returns {Object}
+   */
+  function updateUserStatus(targetId, isActive) {
+    setup();
+    if (!targetId) throw new Error('ID user wajib disertakan.');
+    var users = Database.getAll(TABLE);
+    var found = users.find(function(u) { return String(u.id) === String(targetId); });
+    if (!found) throw new Error('User dengan ID ' + targetId + ' tidak ditemukan.');
+    var updated = {};
+    Object.keys(found).forEach(function(k) { updated[k] = found[k]; });
+    updated.isActive = isActive ? true : false;
+    Database.update(TABLE, String(targetId), updated);
+    return { success: true, message: isActive ? 'Akun berhasil diaktifkan.' : 'Akun berhasil disuspend.', isActive: updated.isActive };
+  }
+
+  /**
+   * Reset PIN user oleh admin
+   * @param {string} targetId - ID user
+   * @param {string} newPin - PIN baru (min 4 digit)
+   * @returns {Object}
+   */
+  function resetUserPin(targetId, newPin) {
+    setup();
+    if (!targetId) throw new Error('ID user wajib disertakan.');
+    var pin = String(newPin || '').trim();
+    if (pin.length < 4) throw new Error('PIN baru minimal 4 karakter.');
+    var users = Database.getAll(TABLE);
+    var found = users.find(function(u) { return String(u.id) === String(targetId); });
+    if (!found) throw new Error('User tidak ditemukan.');
+    var updated = {};
+    Object.keys(found).forEach(function(k) { updated[k] = found[k]; });
+    updated.pin = pin;
+    Database.update(TABLE, String(targetId), updated);
+    return { success: true, message: 'PIN berhasil direset.' };
+  }
+
+  /**
+   * Tambah akun kurir baru
+   * @param {Object} data - { name, phone, email, pin, address }
+   * @returns {Object}
+   */
+  function addCourier(data) {
+    setup();
+    if (!data || !data.name) throw new Error('Nama kurir wajib diisi.');
+    if (!data.phone && !data.email) throw new Error('Nomor HP atau email wajib diisi.');
+    if (!data.pin || String(data.pin).length < 4) throw new Error('PIN minimal 4 karakter.');
+
+    var newCourier = {
+      name: String(data.name).trim(),
+      phone: _normalizePhone(data.phone) || '',
+      email: (data.email || '').trim().toLowerCase(),
+      role: 'kurir',
+      pin: String(data.pin).trim(),
+      address: (data.address || '').trim(),
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+
+    var inserted = Database.insert(TABLE, newCourier);
+    return { success: true, message: 'Kurir ' + newCourier.name + ' berhasil ditambahkan.', courier: inserted };
+  }
+
+  /**
+   * Edit data akun kurir
+   * @param {string} targetId - ID kurir
+   * @param {Object} data - field yang ingin diubah
+   * @returns {Object}
+   */
+  function updateCourier(targetId, data) {
+    setup();
+    if (!targetId) throw new Error('ID kurir wajib disertakan.');
+    var users = Database.getAll(TABLE);
+    var found = users.find(function(u) { return String(u.id) === String(targetId) && u.role === 'kurir'; });
+    if (!found) throw new Error('Kurir tidak ditemukan.');
+
+    var updated = {};
+    Object.keys(found).forEach(function(k) { updated[k] = found[k]; });
+    if (data.name) updated.name = String(data.name).trim();
+    if (data.phone) updated.phone = _normalizePhone(data.phone);
+    if (data.email !== undefined) updated.email = String(data.email).trim().toLowerCase();
+    if (data.pin && String(data.pin).length >= 4) updated.pin = String(data.pin).trim();
+    if (data.address !== undefined) updated.address = String(data.address).trim();
+    if (data.isActive !== undefined) updated.isActive = data.isActive ? true : false;
+
+    Database.update(TABLE, String(targetId), updated);
+    return { success: true, message: 'Data kurir berhasil diperbarui.' };
   }
 
   return {
@@ -587,7 +702,12 @@ var Auth = (function () {
     getAuthStatus: getAuthStatus,
     requireAdmin: requireAdmin,
     getAllUsers: getAllUsers,
-    getCouriers: getCouriers
+    getCouriers: getCouriers,
+    getAllCouriers: getAllCouriers,
+    updateUserStatus: updateUserStatus,
+    resetUserPin: resetUserPin,
+    addCourier: addCourier,
+    updateCourier: updateCourier
   };
 
 })();

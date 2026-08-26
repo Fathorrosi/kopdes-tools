@@ -22,7 +22,8 @@ var ProductController = (function () {
     'isActive',
     'isPromo',
     'promoPrice',
-    'soldCount'
+    'soldCount',
+    'unit'
   ];
 
   var IMG_BASE = 'https://images.unsplash.com/photo-';

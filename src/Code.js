@@ -435,6 +435,213 @@ function getCouriers() { // eslint-disable-line no-unused-vars
   return Auth.getCouriers();
 }
 
+/**
+ * Mengambil semua kurir (aktif + nonaktif) untuk halaman manajemen kurir admin
+ * @param {string} [userId]
+ * @returns {Object[]}
+ */
+function getAllCouriers(userId) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  return Auth.getAllCouriers();
+}
+
+/**
+ * Suspend atau aktifkan akun user / anggota (Admin only)
+ * @param {string} userId - ID admin yang memanggil
+ * @param {string} targetId - ID user target
+ * @param {boolean} isActive
+ * @returns {Object}
+ */
+function updateUserStatus(userId, targetId, isActive) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  return Auth.updateUserStatus(targetId, isActive);
+}
+
+/**
+ * Reset PIN user oleh admin
+ * @param {string} userId - ID admin yang memanggil
+ * @param {string} targetId - ID user target
+ * @param {string} newPin
+ * @returns {Object}
+ */
+function resetUserPin(userId, targetId, newPin) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  return Auth.resetUserPin(targetId, newPin);
+}
+
+/**
+ * Tambah akun kurir baru (Admin only)
+ * @param {string} userId
+ * @param {Object} data - { name, phone, email, pin, address }
+ * @returns {Object}
+ */
+function addCourier(userId, data) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  return Auth.addCourier(data);
+}
+
+/**
+ * Edit data akun kurir (Admin only)
+ * @param {string} userId
+ * @param {string} targetId - ID kurir
+ * @param {Object} data
+ * @returns {Object}
+ */
+function updateCourier(userId, targetId, data) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  return Auth.updateCourier(targetId, data);
+}
+
+/**
+ * Statistik ringkasan untuk Dashboard Admin
+ * @param {string} [userId]
+ * @returns {Object}
+ */
+function getDashboardStats(userId) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+
+  var allOrders = OrderController.getAllOrders();
+  var allUsers = Auth.getAllUsers();
+  var allProducts = [];
+  try { allProducts = ProductController.getAll(); } catch(e) { allProducts = []; }
+
+  var todayStr = new Date().toISOString().slice(0, 10);
+  var monthStr = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+  var totalRevenue = 0;
+  var revenueThisMonth = 0;
+  var ordersToday = 0;
+  var pendingCount = 0;
+  var processingCount = 0;
+  var deliveringCount = 0;
+  var completedCount = 0;
+
+  allOrders.forEach(function(o) {
+    var total = Number(o.total || 0);
+    var orderDate = (o.createdAt || '').slice(0, 10);
+    var orderMonth = (o.createdAt || '').slice(0, 7);
+
+    if (o.status === 'completed') {
+      totalRevenue += total;
+      completedCount++;
+      if (orderMonth === monthStr) revenueThisMonth += total;
+    }
+    if (o.status === 'pending') pendingCount++;
+    if (o.status === 'processing') processingCount++;
+    if (o.status === 'delivering') deliveringCount++;
+    if (orderDate === todayStr) ordersToday++;
+  });
+
+  var activeMembers = allUsers.filter(function(u) {
+    return u.role === 'anggota' && u.isActive !== false && String(u.isActive).toLowerCase() !== 'false';
+  }).length;
+
+  var activeProducts = allProducts.filter(function(p) {
+    return p.isActive !== false && String(p.isActive).toLowerCase() !== 'false';
+  }).length;
+
+  var lowStockProducts = allProducts.filter(function(p) {
+    return p.isActive !== false && Number(p.stock || 0) > 0 && Number(p.stock) <= 5;
+  }).length;
+
+  var outOfStockProducts = allProducts.filter(function(p) {
+    return p.isActive !== false && Number(p.stock || 0) <= 0;
+  }).length;
+
+  // 5 pesanan terbaru
+  var recentOrders = allOrders.slice().sort(function(a, b) {
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+  }).slice(0, 5);
+
+  // Produk stok menipis (≤5) untuk warning
+  var lowStockList = allProducts.filter(function(p) {
+    return p.isActive !== false && Number(p.stock || 0) <= 5;
+  }).sort(function(a, b) {
+    return Number(a.stock || 0) - Number(b.stock || 0);
+  }).slice(0, 5);
+
+  return {
+    totalRevenue: totalRevenue,
+    revenueThisMonth: revenueThisMonth,
+    ordersToday: ordersToday,
+    totalOrders: allOrders.length,
+    pendingCount: pendingCount,
+    processingCount: processingCount,
+    deliveringCount: deliveringCount,
+    completedCount: completedCount,
+    activeMembers: activeMembers,
+    activeProducts: activeProducts,
+    lowStockProducts: lowStockProducts,
+    outOfStockProducts: outOfStockProducts,
+    recentOrders: recentOrders,
+    lowStockList: lowStockList
+  };
+}
+
+/**
+ * Rekap pesanan dengan filter tanggal untuk ekspor laporan (Admin only)
+ * @param {string} userId
+ * @param {string} [dateFrom] - YYYY-MM-DD
+ * @param {string} [dateTo]   - YYYY-MM-DD
+ * @param {string} [status]   - filter status (opsional)
+ * @returns {Object[]}
+ */
+function getOrdersReport(userId, dateFrom, dateTo, status) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  var allOrders = OrderController.getAllOrders();
+
+  return allOrders.filter(function(o) {
+    var orderDate = (o.createdAt || '').slice(0, 10);
+    if (dateFrom && orderDate < dateFrom) return false;
+    if (dateTo && orderDate > dateTo) return false;
+    if (status && o.status !== status) return false;
+    return true;
+  }).sort(function(a, b) {
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+  });
+}
+
+/**
+ * Memperbarui status banyak produk sekaligus (Admin only)
+ * @param {string} userId
+ * @param {string[]} ids
+ * @param {Object} data
+ * @returns {{ success: boolean, count: number }}
+ */
+function bulkUpdateProducts(userId, ids, data) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  if (!ids || !ids.length) throw new Error('Daftar ID produk kosong.');
+  var count = 0;
+  ids.forEach(function(id) {
+    try {
+      ProductController.update(id, data);
+      count++;
+    } catch(e) { /* ignore single error */ }
+  });
+  return { success: true, count: count };
+}
+
+/**
+ * Menghapus banyak produk sekaligus (Admin only)
+ * @param {string} userId
+ * @param {string[]} ids
+ * @returns {{ success: boolean, count: number }}
+ */
+function bulkDeleteProducts(userId, ids) { // eslint-disable-line no-unused-vars
+  Auth.requireAdmin(userId);
+  if (!ids || !ids.length) throw new Error('Daftar ID produk kosong.');
+  var count = 0;
+  ids.forEach(function(id) {
+    try {
+      ProductController.delete(id);
+      count++;
+    } catch(e) { /* ignore single error */ }
+  });
+  return { success: true, count: count };
+}
+
+
+
 // ============================================================
 //  EXPOSED FUNCTIONS — Image Upload (Google Drive)
 // ============================================================
