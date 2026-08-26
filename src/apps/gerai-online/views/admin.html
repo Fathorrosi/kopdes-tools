@@ -18,6 +18,9 @@
     <!-- ===== FONT AWESOME ===== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
+    <!-- ===== CHART.JS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
     <style>
         /* ============================================================
            ROOT & THEME VARIABLES
@@ -1762,6 +1765,12 @@
                     <button class="btn btn-primary" onclick="CourierMgmt.openAdd()"><i class="fas fa-plus"></i> Tambah Kurir</button>
                 </div>
                 <div class="table-wrap">
+                    <div class="table-filter-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="search" id="courier-search" class="input" placeholder="Cari nama, nomor HP, atau alamat kurir..." oninput="CourierMgmt.filter()" />
+                        </div>
+                    </div>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -1786,41 +1795,115 @@
             <div id="tab-reports" class="tab-pane" style="display:none;">
                 <div class="page-header">
                     <div class="page-header-left">
-                        <h2><i class="fas fa-chart-bar" style="color:var(--c-primary);"></i> Laporan &amp; Rekap Pesanan</h2>
-                        <p>Filter dan export rekap transaksi pesanan ke file CSV yang siap dibuka di Excel.</p>
+                        <h2><i class="fas fa-chart-line" style="color:var(--c-primary);"></i> Laporan &amp; Analitik Penjualan</h2>
+                        <p>Pantau tren omzet gerai, volume pesanan, dan unduh data transaksi dalam format CSV.</p>
                     </div>
                     <button class="btn btn-primary" onclick="Reports.exportCsv()" id="report-export-btn" style="display:none;"><i class="fas fa-file-csv"></i> Unduh File CSV</button>
                 </div>
+
+                <!-- Filter Card -->
                 <div class="card" style="margin-bottom:20px;">
                     <div class="card-body">
                         <div class="form-row" style="align-items:flex-end;gap:12px;">
                             <div class="form-group" style="flex:1;min-width:140px;">
                                 <label class="form-label"><i class="fas fa-calendar" style="color:var(--c-primary);"></i> Dari Tanggal</label>
-                                <input type="date" id="report-date-from" class="input" />
+                                <input type="date" id="report-date-from" class="input" onchange="Reports.load()" />
                             </div>
                             <div class="form-group" style="flex:1;min-width:140px;">
                                 <label class="form-label"><i class="fas fa-calendar" style="color:var(--c-primary);"></i> Sampai Tanggal</label>
-                                <input type="date" id="report-date-to" class="input" />
+                                <input type="date" id="report-date-to" class="input" onchange="Reports.load()" />
                             </div>
                             <div class="form-group" style="flex:1;min-width:140px;">
                                 <label class="form-label">Filter Status</label>
-                                <select id="report-status-filter" class="input" style="font-size:13px;">
+                                <select id="report-status-filter" class="input" style="font-size:13px;" onchange="Reports.load()">
                                     <option value="">Semua Status</option>
                                     <option value="pending">⏳ Menunggu Validasi</option>
                                     <option value="processing">📦 Disiapkan</option>
                                     <option value="delivering">🚚 Dikirim</option>
-                                    <option value="completed">✅ Selesai</option>
+                                    <option value="completed">✅ Selesai (Lunas)</option>
                                     <option value="cancelled">❌ Dibatalkan</option>
                                 </select>
                             </div>
                             <div class="form-group" style="flex:0 0 auto;">
                                 <label class="form-label">&nbsp;</label>
-                                <button class="btn btn-primary" onclick="Reports.load()"><i class="fas fa-search"></i> Tampilkan Rekap</button>
+                                <button class="btn btn-primary" onclick="Reports.load()"><i class="fas fa-rotate"></i> Muat Ulang</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Summary Overview Cards -->
+                <div id="report-summary-cards" class="dash-metrics-grid" style="margin-bottom:20px;display:none;">
+                    <div class="dash-metric-card">
+                        <div class="dash-mc-top">
+                            <div class="dash-mc-icon" style="background:linear-gradient(135deg,#10b981,#059669);"><i class="fas fa-money-bill-wave"></i></div>
+                            <span class="dash-mc-pill" style="color:#059669;background:#ecfdf5;">Lunas / COD</span>
+                        </div>
+                        <div>
+                            <div class="dash-mc-label">Total Omzet Penjualan</div>
+                            <div class="dash-mc-val" id="rep-stat-revenue" style="color:#059669;">Rp 0</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-metric-card">
+                        <div class="dash-mc-top">
+                            <div class="dash-mc-icon" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);"><i class="fas fa-receipt"></i></div>
+                            <span class="dash-mc-pill" style="color:#1d4ed8;background:#eff6ff;">Pesanan</span>
+                        </div>
+                        <div>
+                            <div class="dash-mc-label">Total Transaksi</div>
+                            <div class="dash-mc-val" id="rep-stat-orders" style="color:#1d4ed8;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-metric-card">
+                        <div class="dash-mc-top">
+                            <div class="dash-mc-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);"><i class="fas fa-chart-pie"></i></div>
+                            <span class="dash-mc-pill" style="color:#6d28d9;background:#f5f3ff;">Rasio</span>
+                        </div>
+                        <div>
+                            <div class="dash-mc-label">Tingkat Keberhasilan</div>
+                            <div class="dash-mc-val" id="rep-stat-rate" style="color:#6d28d9;">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Chart Card with Dynamic Tabs (Hari / Minggu / Bulan) -->
+                <div class="card" id="report-chart-card" style="margin-bottom:24px;border-radius:var(--r-xl);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:none;">
+                    <div class="card-body" style="padding:20px 24px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;">
+                            <div>
+                                <h3 style="font-size:15px;font-weight:800;color:var(--c-text);display:flex;align-items:center;gap:8px;">
+                                    <i class="fas fa-chart-area" style="color:var(--c-primary);"></i> Grafik Tren Penjualan &amp; Omzet
+                                </h3>
+                                <p style="font-size:12.5px;color:var(--c-text-3);margin-top:2px;">Visualisasi pendapatan (Rp) dan volume transaksi pesanan.</p>
+                            </div>
+                            <!-- Time Grouping Segmented Control -->
+                            <div style="display:inline-flex;background:var(--c-surface-2);padding:3px;border-radius:var(--r-full);border:1px solid var(--c-border);gap:2px;">
+                                <button type="button" class="btn btn-ghost btn-sm rep-gran-btn" id="rep-btn-daily" onclick="Reports.setGranularity('daily')" style="border-radius:var(--r-full);padding:5px 14px;font-size:12px;font-weight:700;">📅 Harian</button>
+                                <button type="button" class="btn btn-ghost btn-sm rep-gran-btn" id="rep-btn-weekly" onclick="Reports.setGranularity('weekly')" style="border-radius:var(--r-full);padding:5px 14px;font-size:12px;font-weight:700;">📊 Mingguan</button>
+                                <button type="button" class="btn btn-ghost btn-sm rep-gran-btn" id="rep-btn-monthly" onclick="Reports.setGranularity('monthly')" style="border-radius:var(--r-full);padding:5px 14px;font-size:12px;font-weight:700;">🗓️ Bulanan</button>
+                            </div>
+                        </div>
+
+                        <!-- Canvas -->
+                        <div style="position:relative;height:300px;width:100%;">
+                            <canvas id="report-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Section with Search -->
                 <div class="table-wrap">
+                    <div class="table-filter-bar">
+                        <div class="search-box" style="flex:1;min-width:260px;">
+                            <i class="fas fa-search"></i>
+                            <input type="search" id="report-search" class="input" placeholder="Cari nomor ID, nama pemesan, nomor HP, atau nama produk..." oninput="Reports.filterTable()" />
+                        </div>
+                        <div id="report-table-count" style="font-size:12.5px;font-weight:700;color:var(--c-text-3);">
+                            0 transaksi ditemukan
+                        </div>
+                    </div>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -1833,11 +1916,9 @@
                             </tr>
                         </thead>
                         <tbody id="reports-tbody">
-                            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--c-text-4);">Pilih rentang tanggal dan klik "Tampilkan Rekap" untuk memuat transaksi.</td></tr>
+                            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--c-text-4);">Pilih rentang tanggal dan klik "Muat Ulang" untuk melihat rekap pesanan.</td></tr>
                         </tbody>
                     </table>
-                </div>
-                <div id="report-summary" style="display:none;margin-top:16px;padding:16px 20px;background:var(--c-surface);border-radius:var(--r-xl);border:1px solid var(--c-border);font-size:13.5px;box-shadow:var(--shadow-xs);">
                 </div>
             </div>
 
@@ -2617,7 +2698,7 @@
                 if (tab === 'dashboard') { Dashboard.load(); }
                 if (tab === 'members' && !_tabsLoaded.members) { _tabsLoaded.members = true; Members.load(); }
                 if (tab === 'couriers' && !_tabsLoaded.couriers) { _tabsLoaded.couriers = true; CourierMgmt.load(); }
-                if (tab === 'reports') { /* Reports loaded on user action */ }
+                if (tab === 'reports' && !_tabsLoaded.reports) { _tabsLoaded.reports = true; Reports.init(); }
                 if (tab === 'village') VillageProfile.load();
             }
 
@@ -2720,7 +2801,11 @@
                 var kw = (document.getElementById('prod-search').value || '').trim().toLowerCase();
 
                 var filtered = _products.filter(function(p) {
-                    var matchKw = !kw || (p.name || '').toLowerCase().includes(kw) || (p.category || '').toLowerCase().includes(kw);
+                    var matchKw = !kw ||
+                        (p.name || '').toLowerCase().includes(kw) ||
+                        (p.category || '').toLowerCase().includes(kw) ||
+                        (p.description || '').toLowerCase().includes(kw) ||
+                        String(p.id || '').toLowerCase().includes(kw);
                     var matchCat = !_catFilter || p.category === _catFilter;
                     var matchPromo = !_promoFilter || (_promoFilter === 'promo_only' ? p.isPromo : !p.isPromo);
                     return matchKw && matchCat && matchPromo;
@@ -2907,7 +2992,22 @@
                 var kw = (document.getElementById('order-search').value || '').trim().toLowerCase();
 
                 var filtered = _orders.filter(function(o) {
-                    var matchKw = !kw || (o.customerName || '').toLowerCase().includes(kw) || (o.customerPhone || '').includes(kw) || (o.id || '').toLowerCase().includes(kw);
+                    var items = [];
+                    if (Array.isArray(o.items)) {
+                        items = o.items;
+                    } else if (typeof o.items === 'string') {
+                        try { items = JSON.parse(o.items); } catch (e) { items = []; }
+                    }
+                    var itemNames = items.map(function(i) { return (i.name || '').toLowerCase(); }).join(' ');
+
+                    var matchKw = !kw ||
+                        (o.customerName || '').toLowerCase().includes(kw) ||
+                        (o.customerPhone || '').toLowerCase().includes(kw) ||
+                        String(o.id || '').toLowerCase().includes(kw) ||
+                        (o.deliveryAddress || '').toLowerCase().includes(kw) ||
+                        (o.courierName || '').toLowerCase().includes(kw) ||
+                        itemNames.includes(kw);
+
                     var matchSt = !_orderStatusFilter || o.status === _orderStatusFilter;
                     return matchKw && matchSt;
                 });
@@ -4297,7 +4397,7 @@
                 google.script.run
                     .withSuccessHandler(function(list) {
                         _all = list || [];
-                        _render();
+                        filter();
                     })
                     .withFailureHandler(function(e) {
                         Toast.show('Gagal memuat kurir: ' + (e.message || e), 'error');
@@ -4305,14 +4405,28 @@
                     .getAllCouriers(uid);
             }
 
-            function _render() {
+            function filter() {
+                var q = (document.getElementById('courier-search').value || '').trim().toLowerCase();
+                var filtered = _all.filter(function(c) {
+                    if (!q) return true;
+                    var name = (c.name || '').toLowerCase();
+                    var phone = (c.phone || '').toLowerCase();
+                    var email = (c.email || '').toLowerCase();
+                    var addr = (c.address || '').toLowerCase();
+                    return name.includes(q) || phone.includes(q) || email.includes(q) || addr.includes(q);
+                });
+                _render(filtered);
+            }
+
+            function _render(list) {
                 var tbody = document.getElementById('couriers-tbody');
-                if (!_all.length) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--c-text-4);">Belum ada akun kurir terdaftar.</td></tr>';
+                var data = list || _all;
+                if (!data.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--c-text-4);">Tidak ada akun kurir ditemukan.</td></tr>';
                     return;
                 }
                 var html = '';
-                _all.forEach(function(c) {
+                data.forEach(function(c) {
                     var isActive = c.isActive !== false && String(c.isActive).toLowerCase() !== 'false';
                     var waLink = c.phone ? ('https://wa.me/62' + String(c.phone).replace(/^0/, '')) : '';
 
@@ -4425,14 +4539,16 @@
                     .updateCourier(uid, id, { isActive: newStatus });
             }
 
-            return { load: load, openAdd: openAdd, openEdit: openEdit, closeModal: closeModal, save: save, toggleActive: toggleActive };
+            return { load: load, filter: filter, openAdd: openAdd, openEdit: openEdit, closeModal: closeModal, save: save, toggleActive: toggleActive };
         })();
 
         // ============================================================
-        //  REPORTS MODULE
+        //  REPORTS MODULE (WITH DYNAMIC CHART)
         // ============================================================
         var Reports = (function() {
             var _data = [];
+            var _chartInstance = null;
+            var _granularity = 'daily'; // 'daily' | 'weekly' | 'monthly'
 
             var STATUS_CONFIG = {
                 pending: { label: '⏳ Menunggu', color: '#d97706', bg: '#fef3c7' },
@@ -4442,6 +4558,19 @@
                 cancelled: { label: '❌ Dibatalkan', color: '#dc2626', bg: '#fef2f2' }
             };
 
+            function init() {
+                var today = new Date();
+                var thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(today.getDate() - 30);
+
+                var dFrom = document.getElementById('report-date-from');
+                var dTo = document.getElementById('report-date-to');
+                if (dFrom && !dFrom.value) dFrom.value = thirtyDaysAgo.toISOString().slice(0, 10);
+                if (dTo && !dTo.value) dTo.value = today.toISOString().slice(0, 10);
+
+                load();
+            }
+
             function load() {
                 var uid = localStorage.getItem('kopdes_user_id') || '';
                 var dateFrom = document.getElementById('report-date-from').value;
@@ -4450,12 +4579,13 @@
                 var tbody = document.getElementById('reports-tbody');
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;"><i class="fas fa-spinner fa-spin"></i> Memuat laporan transaksi...</td></tr>';
                 document.getElementById('report-export-btn').style.display = 'none';
-                document.getElementById('report-summary').style.display = 'none';
 
                 google.script.run
                     .withSuccessHandler(function(orders) {
                         _data = orders || [];
-                        _render();
+                        _updateSummary();
+                        _renderChart();
+                        filterTable();
                     })
                     .withFailureHandler(function(e) {
                         Toast.show('Gagal memuat laporan: ' + (e.message || e), 'error');
@@ -4463,19 +4593,217 @@
                     .getOrdersReport(uid, dateFrom || null, dateTo || null, status || null);
             }
 
-            function _render() {
-                var tbody = document.getElementById('reports-tbody');
+            function _updateSummary() {
+                var summaryCards = document.getElementById('report-summary-cards');
+                var chartCard = document.getElementById('report-chart-card');
                 if (!_data.length) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--c-text-4);">Tidak ada pesanan dalam rentang tanggal tersebut.</td></tr>';
+                    if (summaryCards) summaryCards.style.display = 'none';
+                    if (chartCard) chartCard.style.display = 'none';
+                    return;
+                }
+
+                var completedOrders = _data.filter(function(o) { return o.status === 'completed'; });
+                var totalRevenue = completedOrders.reduce(function(acc, o) { return acc + Number(o.total || 0); }, 0);
+                var successRate = _data.length > 0 ? Math.round((completedOrders.length / _data.length) * 100) : 0;
+
+                document.getElementById('rep-stat-revenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
+                document.getElementById('rep-stat-orders').textContent = _data.length + ' Transaksi';
+                document.getElementById('rep-stat-rate').textContent = successRate + '% Selesai';
+
+                if (summaryCards) summaryCards.style.display = 'grid';
+                if (chartCard) chartCard.style.display = 'block';
+            }
+
+            function setGranularity(g) {
+                _granularity = g;
+                ['daily', 'weekly', 'monthly'].forEach(function(mode) {
+                    var btn = document.getElementById('rep-btn-' + mode);
+                    if (btn) {
+                        if (mode === g) {
+                            btn.className = 'btn btn-primary btn-sm rep-gran-btn';
+                        } else {
+                            btn.className = 'btn btn-ghost btn-sm rep-gran-btn';
+                        }
+                    }
+                });
+                _renderChart();
+            }
+
+            function _renderChart() {
+                if (typeof Chart === 'undefined') return;
+                var canvas = document.getElementById('report-canvas');
+                if (!canvas) return;
+
+                // Group data by granularity
+                var groups = {};
+                var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+
+                _data.forEach(function(o) {
+                    if (!o.createdAt) return;
+                    var dateObj = new Date(o.createdAt);
+                    if (isNaN(dateObj.getTime())) return;
+
+                    var key = '';
+                    var label = '';
+
+                    if (_granularity === 'daily') {
+                        key = o.createdAt.slice(0, 10);
+                        label = dateObj.getDate() + ' ' + monthNames[dateObj.getMonth()];
+                    } else if (_granularity === 'weekly') {
+                        // Start of week (Monday)
+                        var day = dateObj.getDay();
+                        var diff = dateObj.getDate() - day + (day === 0 ? -6 : 1);
+                        var startOfWeek = new Date(dateObj.setDate(diff));
+                        key = startOfWeek.toISOString().slice(0, 10);
+                        label = 'Mgg ' + startOfWeek.getDate() + ' ' + monthNames[startOfWeek.getMonth()];
+                    } else if (_granularity === 'monthly') {
+                        key = o.createdAt.slice(0, 7);
+                        label = monthNames[dateObj.getMonth()] + ' ' + dateObj.getFullYear();
+                    }
+
+                    if (!groups[key]) {
+                        groups[key] = { label: label, revenue: 0, count: 0, sortKey: key };
+                    }
+                    if (o.status === 'completed') {
+                        groups[key].revenue += Number(o.total || 0);
+                    }
+                    groups[key].count += 1;
+                });
+
+                var sortedKeys = Object.keys(groups).sort();
+                var labels = sortedKeys.map(function(k) { return groups[k].label; });
+                var revData = sortedKeys.map(function(k) { return groups[k].revenue; });
+                var countData = sortedKeys.map(function(k) { return groups[k].count; });
+
+                if (_chartInstance) {
+                    _chartInstance.destroy();
+                    _chartInstance = null;
+                }
+
+                var ctx = canvas.getContext('2d');
+                _chartInstance = new Chart(ctx, {
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                type: 'bar',
+                                label: 'Omzet Penjualan (Rp)',
+                                data: revData,
+                                backgroundColor: 'rgba(16, 185, 129, 0.75)',
+                                borderColor: '#059669',
+                                borderWidth: 1.5,
+                                borderRadius: 6,
+                                yAxisID: 'yRevenue',
+                                order: 2
+                            },
+                            {
+                                type: 'line',
+                                label: 'Jumlah Pesanan',
+                                data: countData,
+                                borderColor: '#2563eb',
+                                backgroundColor: 'rgba(37, 99, 235, 0.15)',
+                                fill: true,
+                                tension: 0.35,
+                                pointBackgroundColor: '#1d4ed8',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4.5,
+                                pointHoverRadius: 6,
+                                yAxisID: 'yOrders',
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Inter', size: 12, weight: '600' },
+                                    usePointStyle: true,
+                                    padding: 16
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.dataset.yAxisID === 'yRevenue') {
+                                            return ' Omzet: Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
+                                        }
+                                        return ' Pesanan: ' + context.parsed.y + ' transaksi';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Inter', size: 11 } }
+                            },
+                            yRevenue: {
+                                type: 'linear',
+                                position: 'left',
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: {
+                                    font: { family: 'Inter', size: 11 },
+                                    callback: function(v) {
+                                        if (v >= 1000000) return 'Rp ' + (v / 1000000).toFixed(1) + ' jt';
+                                        if (v >= 1000) return 'Rp ' + (v / 1000).toFixed(0) + ' rb';
+                                        return 'Rp ' + v;
+                                    }
+                                }
+                            },
+                            yOrders: {
+                                type: 'linear',
+                                position: 'right',
+                                grid: { drawOnChartArea: false },
+                                ticks: {
+                                    font: { family: 'Inter', size: 11 },
+                                    stepSize: 1,
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function filterTable() {
+                var kw = (document.getElementById('report-search').value || '').trim().toLowerCase();
+                var filtered = _data.filter(function(o) {
+                    if (!kw) return true;
+                    var name = (o.customerName || '').toLowerCase();
+                    var phone = (o.customerPhone || '').toLowerCase();
+                    var id = String(o.id || '').toLowerCase();
+                    var courier = (o.courierName || '').toLowerCase();
+                    var itemNames = (o.items || []).map(function(i) { return (i.name || '').toLowerCase(); }).join(' ');
+
+                    return name.includes(kw) || phone.includes(kw) || id.includes(kw) || courier.includes(kw) || itemNames.includes(kw);
+                });
+
+                var countEl = document.getElementById('report-table-count');
+                if (countEl) countEl.textContent = filtered.length + ' transaksi ditemukan';
+
+                _renderTable(filtered);
+            }
+
+            function _renderTable(list) {
+                var tbody = document.getElementById('reports-tbody');
+                if (!list.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--c-text-4);">Tidak ada transaksi yang cocok dengan pencarian.</td></tr>';
                     document.getElementById('report-export-btn').style.display = 'none';
                     return;
                 }
 
-                var totalRev = 0;
                 var html = '';
-                _data.forEach(function(o) {
+                list.forEach(function(o) {
                     var total = Number(o.total || 0);
-                    if (o.status === 'completed') totalRev += total;
                     var itemNames = (o.items || []).map(function(i) { return escapeHtml(i.name || '?') + ' x' + (i.qty || 1); }).join(', ');
                     var dt = o.createdAt ? o.createdAt.slice(0, 16).replace('T', ' ') : '—';
                     var st = STATUS_CONFIG[o.status] || { label: o.status, color: '#64748b', bg: '#f1f5f9' };
@@ -4490,17 +4818,6 @@
                     '</tr>';
                 });
                 tbody.innerHTML = html;
-
-                // Summary bar
-                var summary = document.getElementById('report-summary');
-                summary.style.display = 'block';
-                summary.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:16px;">' +
-                    '<div><span style="color:var(--c-text-3);font-size:12px;">Total Transaksi:</span> <strong style="font-size:15px;color:var(--c-text);">' + _data.length + '</strong></div>' +
-                    '<div><span style="color:var(--c-text-3);font-size:12px;">Selesai (Lunas):</span> <strong style="font-size:15px;color:#059669;">' + _data.filter(function(o){return o.status==='completed';}).length + '</strong></div>' +
-                    '<div><span style="color:var(--c-text-3);font-size:12px;">Dibatalkan:</span> <strong style="font-size:15px;color:#dc2626;">' + _data.filter(function(o){return o.status==='cancelled';}).length + '</strong></div>' +
-                    '<div><span style="color:var(--c-text-3);font-size:12px;">Total Omzet Terkumpul:</span> <strong style="font-size:16px;color:#059669;">Rp ' + totalRev.toLocaleString('id-ID') + '</strong></div>' +
-                '</div>';
-
                 document.getElementById('report-export-btn').style.display = 'inline-flex';
             }
 
@@ -4528,7 +4845,7 @@
                 Toast.show('File CSV berhasil diunduh!', 'success');
             }
 
-            return { load: load, exportCsv: exportCsv };
+            return { init: init, load: load, setGranularity: setGranularity, filterTable: filterTable, exportCsv: exportCsv };
         })();
 
         // ============================================================
