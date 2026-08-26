@@ -24,12 +24,14 @@ Dokumen ini adalah panduan bagi **Developer / Koperasi Desa** untuk memasang sis
    1dBn__NieR3_CqWolLFmfc4tIxFBt976HwPGtXaZlwd1MfBGS7APDjq1Y
    ```
 3. Klik **Look up (Cari)**.
-4. Pada dropdown **Version**, pilih **Versi Terbaru** (misal: `Version 113`).
+4. Pada dropdown **Version**, pilih **Versi Terbaru** (tanyakan ke penyedia layanan untuk nomor versi terkini).
 5. Pada kolom **Identifier**, ketik:
    ```text
    KopdesEngine
    ```
 6. Klik **Add (Tambahkan)**.
+
+> 💡 **Kebijakan Versi:** Master & klien memakai **versi terbaru yang sama**. Tidak perlu memakai versi di bawahnya.
 
 ---
 
@@ -56,3 +58,17 @@ Dokumen ini adalah panduan bagi **Developer / Koperasi Desa** untuk memasang sis
    - **Who has access:** *Anyone (Siapa saja)*
 3. Klik **Deploy** ➔ Salin **Web App URL**.
 4. Aplikasi Gerai Online Koperasi Desa sudah langsung aktif, live, dan siap digunakan! 🎉
+
+---
+
+### ⚡ Opsional: Aktifkan Update Otomatis (Tanpa Deploy Ulang)
+Agar klien **tidak perlu deploy ulang** setiap kali penyedia merilis perbaikan, gunakan deployment versi **`HEAD`**:
+
+1. Buka **Deploy** ➔ **Manage deployments (Kelola deployment)**.
+2. Klik ikon **Pensil (Edit ✏️)** pada deployment aktif.
+3. Pada baris **Version**, pilih **`HEAD`** (bukan versi bernomor).
+4. Klik **Deploy**.
+
+> ✅ Dengan `HEAD`, setiap kali library `KopdesEngine` di-update, Web App klien **otomatis memakai versi terbaru** tanpa perlu deploy ulang.
+>
+> ⚠️ **Catatan:** Deployment `HEAD` selalu mengikuti kode terbaru. Untuk produksi yang sangat sensitif, gunakan versi bernomor (perlu deploy ulang saat ganti versi).

@@ -32,6 +32,8 @@
    * Seluruh logika backend (`core/` dan `apps/`) di-deploy sebagai **Google Apps Script Library (`KopdesEngine`)**.
    * Klien (Koperasi Desa) hanya menyalin file jembatan tipis (`client-template/Code.js`) yang terhubung ke Library Master.
    * **Hasil:** Source code Anda 100% aman (tidak bisa dicuri/dijual lagi) dan data warga tetap aman di Google Drive desa.
+   * **Kebijakan Versi:** Master & klien memakai **versi terbaru yang sama**. Untuk update tanpa deploy ulang, klien memakai deployment **`HEAD`** — setiap kali library di-update, Web App klien otomatis memakai versi terbaru.
+   * **Thin Client:** Semua HTML/CSS/JS di-serve dari library (`HtmlService.createTemplateFromFile`), sehingga perubahan tampilan & logika cukup di satu tempat.
 4. **License Enforcement (Fail-Closed):**
    * `LicenseService.require()` dipanggil saat operasi penulisan data utama (*checkout* order). Cache validasi disimpan di `CacheService`.
 5. **Single Unified Application Architecture:**

@@ -55,6 +55,11 @@ Seluruh logika bisnis, database engine, dan tampilan UI disimpan aman sebagai **
 - 🗄️ **Data tersimpan aman** di Google Drive milik masing-masing Koperasi Desa
 - ⚡ **Update fitur instan** — vendor update library, semua klien otomatis mendapat fitur baru (setelah update versi)
 
+**Kebijakan Versi:**
+- Master & klien memakai **versi terbaru yang sama** (tidak perlu versi di bawahnya).
+- Untuk update **tanpa deploy ulang**, klien memakai deployment **`HEAD`** — setiap kali library di-update, Web App klien otomatis memakai versi terbaru.
+- Semua HTML/CSS/JS di-serve dari library, sehingga perubahan tampilan & logika cukup di satu tempat.
+
 ---
 
 ## 🔐 Sistem Kontrol Lisensi
